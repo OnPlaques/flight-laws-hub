@@ -268,9 +268,18 @@ export function matchRegulation(input: {
     );
   }
 
+  // 5. Never leave a claim unmatched — fall back to the closest applicable regulation.
   if (!code) {
-    reasons.push("Route and carrier could not be matched to a regulation — review manually.");
-  } else if (isDisruption && (code === "EU261" || code === "UK261")) {
+    code = isBaggage ? "MONTREAL" : "EU261";
+    confidence = "low";
+    reasons.push(
+      isBaggage
+        ? "No exact route match — baggage claims default to the Montreal Convention, the nearest applicable regulation."
+        : "No exact route match — automatically matched to EU261 as the nearest applicable regulation; the team will confirm eligibility.",
+    );
+  }
+
+  if (isDisruption && (code === "EU261" || code === "UK261")) {
     reasons.push("Delay of 3+ hours, cancellation inside 14 days or denied boarding triggers fixed compensation.");
   }
 
