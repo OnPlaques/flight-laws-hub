@@ -1,0 +1,2 @@
+CREATE POLICY "No direct document access" ON storage.objects FOR SELECT TO anon, authenticated USING (false);
+CREATE POLICY "No direct document uploads" ON storage.objects FOR INSERT TO anon, authenticated WITH CHECK (false);
