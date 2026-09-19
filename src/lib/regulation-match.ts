@@ -106,6 +106,39 @@ function normalise(value: string) {
   return value.toLowerCase().trim();
 }
 
+/** Levenshtein distance, used to snap typos to the nearest known airport/airline. */
+function distance(a: string, b: string): number {
+  if (a === b) return 0;
+  if (!a.length) return b.length;
+  if (!b.length) return a.length;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const curr = [i];
+    for (let j = 1; j <= b.length; j++) {
+      curr[j] = Math.min(prev[j]! + 1, curr[j - 1]! + 1, prev[j - 1]! + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    prev = curr;
+  }
+  return prev[b.length]!;
+}
+
+/** Words in the input that are almost a known keyword (1-2 typos) match the nearest one. */
+function nearestKeywordJurisdiction(text: string): Jurisdiction | null {
+  const words = text.split(/[^a-z]+/).filter((w) => w.length >= 4);
+  let best: { jurisdiction: Jurisdiction; score: number } | null = null;
+  for (const word of words) {
+    for (const [keyword, jurisdiction] of KEYWORDS) {
+      for (const part of keyword.split(" ")) {
+        if (part.length < 4) continue;
+        const d = distance(word, part);
+        const allowed = part.length >= 8 ? 2 : 1;
+        if (d <= allowed && (!best || d < best.score)) best = { jurisdiction, score: d };
+      }
+    }
+  }
+  return best?.jurisdiction ?? null;
+}
+
 export function detectAirportJurisdiction(input: string): Region {
   const text = normalise(input);
   // Explicit IATA code, e.g. "London Heathrow (LHR)" or "LHR"
@@ -114,9 +147,18 @@ export function detectAirportJurisdiction(input: string): Region {
     const hit = AIRPORT_CODES[code];
     if (hit) return { jurisdiction: hit, label: JURISDICTION_LABEL[hit] };
   }
+  // Lowercase IATA code typed as its own word, e.g. "flying from lhr"
+  for (const word of text.split(/[^a-z]+/)) {
+    if (word.length !== 3) continue;
+    const hit = AIRPORT_CODES[word.toUpperCase()];
+    if (hit) return { jurisdiction: hit, label: JURISDICTION_LABEL[hit] };
+  }
   for (const [keyword, jurisdiction] of KEYWORDS) {
     if (text.includes(keyword)) return { jurisdiction, label: JURISDICTION_LABEL[jurisdiction] };
   }
+  // Snap near-miss spellings ("londn", "pariss") to the nearest known region.
+  const near = nearestKeywordJurisdiction(text);
+  if (near) return { jurisdiction: near, label: JURISDICTION_LABEL[near] };
   return { jurisdiction: "OTHER", label: JURISDICTION_LABEL.OTHER };
 }
 
@@ -125,12 +167,29 @@ export function detectAirlineJurisdiction(airlineName: string): Jurisdiction {
   if (!target) return "OTHER";
   for (const group of AIRLINE_GROUPS) {
     for (const airline of group.airlines) {
-      if (normalise(airline.name) === target || target.includes(normalise(airline.name))) {
-        if (normalise(airline.name).includes("turkish")) return "TR";
+      const name = normalise(airline.name);
+      if (name === target || target.includes(name) || (target.length >= 4 && name.includes(target))) {
+        if (name.includes("turkish")) return "TR";
         return GROUP_JURISDICTION[group.label] ?? "OTHER";
       }
     }
   }
+  // Nearest known airline by edit distance — catches typos like "lufthanzsa".
+  let best: { jurisdiction: Jurisdiction; score: number } | null = null;
+  for (const group of AIRLINE_GROUPS) {
+    for (const airline of group.airlines) {
+      const name = normalise(airline.name);
+      const d = distance(target, name);
+      const allowed = name.length >= 10 ? 3 : name.length >= 6 ? 2 : 1;
+      if (d <= allowed && (!best || d < best.score)) {
+        best = {
+          jurisdiction: name.includes("turkish") ? "TR" : (GROUP_JURISDICTION[group.label] ?? "OTHER"),
+          score: d,
+        };
+      }
+    }
+  }
+  if (best) return best.jurisdiction;
   if (target.includes("turkish") || target.includes("pegasus")) return "TR";
   return "OTHER";
 }
@@ -209,9 +268,18 @@ export function matchRegulation(input: {
     );
   }
 
+  // 5. Never leave a claim unmatched — fall back to the closest applicable regulation.
   if (!code) {
-    reasons.push("Route and carrier could not be matched to a regulation — review manually.");
-  } else if (isDisruption && (code === "EU261" || code === "UK261")) {
+    code = isBaggage ? "MONTREAL" : "EU261";
+    confidence = "low";
+    reasons.push(
+      isBaggage
+        ? "No exact route match — baggage claims default to the Montreal Convention, the nearest applicable regulation."
+        : "No exact route match — automatically matched to EU261 as the nearest applicable regulation; the team will confirm eligibility.",
+    );
+  }
+
+  if (isDisruption && (code === "EU261" || code === "UK261")) {
     reasons.push("Delay of 3+ hours, cancellation inside 14 days or denied boarding triggers fixed compensation.");
   }
 
