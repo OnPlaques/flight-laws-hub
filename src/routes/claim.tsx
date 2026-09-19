@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { toast } from "sonner";
 import { ArrowLeft, ArrowRight, Check, FileUp, Loader2, Trash2 } from "lucide-react";
@@ -17,10 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { submitClaim } from "@/lib/claim.functions";
 import { matchRegulation } from "@/lib/regulation-match";
 import { ISSUE_TYPES, AIRLINE_GROUPS, AIRPORT_GROUPS } from "@/lib/jetclaim";
-import { useIsAdmin } from "@/hooks/use-admin";
 import { cn } from "@/lib/utils";
 
 const searchSchema = z.object({
@@ -68,32 +68,15 @@ const contactSchema = z.object({
   full_name: z.string().trim().min(2, "Enter your full name").max(100),
   email: z.string().trim().email("Enter a valid email address").max(255),
   phone: z.string().trim().max(30).optional(),
-  password: z.string().max(72).optional(),
 });
 
 function ClaimPage() {
-  const { isAdmin, loading } = useIsAdmin();
-  if (loading) return null;
-  if (isAdmin) {
-    return (
-      <PageShell>
-        <div className="mx-auto max-w-md px-4 py-24 text-center">
-          <h1 className="text-2xl font-extrabold text-navy">Admin accounts can't file claims</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            You're signed in as the JetClaim admin. Use the console to review passenger claims.
-          </p>
-          <Button asChild className="mt-6 bg-navy text-navy-foreground hover:bg-navy-deep">
-            <Link to="/admin">Go to claims queue</Link>
-          </Button>
-        </div>
-      </PageShell>
-    );
-  }
   return <ClaimForm />;
 }
 
 function ClaimForm() {
   const navigate = useNavigate();
+  const createClaim = useServerFn(submitClaim);
   const search = Route.useSearch();
   const fileInput = useRef<HTMLInputElement>(null);
   const airlineRef = useRef<HTMLDivElement>(null);
@@ -116,7 +99,6 @@ function ClaimForm() {
     full_name: "",
     email: "",
     phone: "",
-    password: "",
   });
 
   const set = (key: keyof typeof form, value: string) =>
@@ -161,82 +143,21 @@ function ClaimForm() {
   async function submit() {
     setSubmitting(true);
     try {
-      let { data: sessionData } = await supabase.auth.getSession();
-
-      if (!sessionData.session) {
-        if (!form.password || form.password.length < 8) {
-          setStep(3);
-          throw new Error("Create a password of at least 8 characters to track your claim.");
-        }
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: form.email,
-          password: form.password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`,
-            data: { full_name: form.full_name, phone: form.phone },
-          },
-        });
-        if (signUpError) {
-          if (signUpError.message.toLowerCase().includes("registered")) {
-            const { error: signInError } = await supabase.auth.signInWithPassword({
-              email: form.email,
-              password: form.password,
-            });
-            if (signInError) throw new Error("That email already has an account. Log in first.");
-          } else {
-            throw signUpError;
-          }
-        }
-        sessionData = (await supabase.auth.getSession()).data;
-      }
-
-      const userId = sessionData.session?.user.id;
-      if (!userId) throw new Error("Please confirm your email, then log in to finish your claim.");
-
-      const { data: claim, error } = await supabase
-        .from("claims")
-        .insert({
-          user_id: userId,
-          airline_name: form.airline_name,
-          flight_number: form.flight_number.toUpperCase(),
-          flight_date: form.flight_date,
-          departure_airport: form.departure_airport,
-          arrival_airport: form.arrival_airport,
-          issue_type: form.issue_type,
-          description: form.description || null,
-          regulation_code: matchRegulation({
-            airline_name: form.airline_name,
-            departure_airport: form.departure_airport,
-            arrival_airport: form.arrival_airport,
-            issue_type: form.issue_type,
-          }).code,
-        })
-        .select("id,reference")
-        .single();
-      if (error) throw error;
-
-      for (const file of files) {
-        const path = `${userId}/${claim.id}/${crypto.randomUUID()}-${file.name}`;
-        const { error: uploadError } = await supabase.storage
-          .from("claim-documents")
-          .upload(path, file);
-        if (uploadError) continue;
-        await supabase.from("claim_documents").insert({
-          claim_id: claim.id,
-          user_id: userId,
-          file_path: path,
-          file_name: file.name,
-          file_size: file.size,
-          content_type: file.type,
-        });
-      }
-
-      await supabase
-        .from("profiles")
-        .update({ full_name: form.full_name, phone: form.phone, email: form.email })
-        .eq("id", userId);
-
-      navigate({ to: "/claim-submitted", search: { ref: claim.reference } });
+      const encodedFiles = await Promise.all(files.map(async (file) => {
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        let binary = "";
+        for (const byte of bytes) binary += String.fromCharCode(byte);
+        return { name: file.name, type: file.type, size: file.size, data: btoa(binary) };
+      }));
+      const result = await createClaim({ data: {
+        ...form,
+        description: form.description || undefined,
+        phone: form.phone || undefined,
+        regulation_code: matchRegulation({ airline_name: form.airline_name, departure_airport: form.departure_airport, arrival_airport: form.arrival_airport, issue_type: form.issue_type }).code,
+        files: encodedFiles,
+      } });
+      navigate({ to: "/claim-submitted", search: { ref: result.reference } });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not submit your claim.");
     } finally {
@@ -470,11 +391,6 @@ function ClaimForm() {
                   <div className="space-y-1.5">
                     <Label htmlFor="phone">Phone</Label>
                     <Input id="phone" maxLength={30} value={form.phone} onChange={(e) => set("phone", e.target.value)} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="pw">Password</Label>
-                    <Input id="pw" type="password" maxLength={72} value={form.password} onChange={(e) => set("password", e.target.value)} />
-                    <p className="text-xs text-muted-foreground">Used to create your claim dashboard.</p>
                   </div>
                 </div>
                 <label className="flex items-start gap-3 rounded-lg border border-border p-4 text-sm">

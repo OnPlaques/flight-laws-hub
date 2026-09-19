@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero, PageShell } from "@/components/site/page-shell";
 import { Button } from "@/components/ui/button";
-import { useIsAdmin } from "@/hooks/use-admin";
 
 export const Route = createFileRoute("/your-rights")({
   head: () => ({
@@ -30,7 +29,6 @@ const RIGHTS = [
 ];
 
 function YourRights() {
-  const { isAdmin } = useIsAdmin();
   return (
     <PageShell>
       <PageHero title="Your Rights" subtitle="What you're entitled to when your flight goes wrong — without the legal jargon." />
@@ -43,11 +41,9 @@ function YourRights() {
             </article>
           ))}
         </div>
-        {isAdmin ? null : (
-          <Button asChild className="mt-10 bg-navy text-navy-foreground hover:bg-navy-deep">
-            <Link to="/claim">Check my claim</Link>
-          </Button>
-        )}
+        <Button asChild className="mt-10 bg-navy text-navy-foreground hover:bg-navy-deep">
+          <Link to="/claim">Check my claim</Link>
+        </Button>
       </section>
     </PageShell>
   );

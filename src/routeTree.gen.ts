@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as ClaimRouteImport } from './routes/claim'
 import { Route as ClaimSubmittedRouteImport } from './routes/claim-submitted'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -28,6 +30,16 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin-login',
+  path: '/admin-login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClaimRoute = ClaimRouteImport.update({
@@ -74,6 +86,8 @@ const YourRightsRoute = YourRightsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/admin-login': typeof AdminLoginRoute
   '/claim': typeof ClaimRoute
   '/claim-submitted': typeof ClaimSubmittedRoute
   '/contact': typeof ContactRoute
@@ -86,6 +100,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/admin-login': typeof AdminLoginRoute
   '/claim': typeof ClaimRoute
   '/claim-submitted': typeof ClaimSubmittedRoute
   '/contact': typeof ContactRoute
@@ -99,6 +115,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/admin-login': typeof AdminLoginRoute
   '/claim': typeof ClaimRoute
   '/claim-submitted': typeof ClaimSubmittedRoute
   '/contact': typeof ContactRoute
@@ -113,6 +131,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
+    | '/admin-login'
     | '/claim'
     | '/claim-submitted'
     | '/contact'
@@ -125,6 +145,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/admin'
+    | '/admin-login'
     | '/claim'
     | '/claim-submitted'
     | '/contact'
@@ -137,6 +159,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
+    | '/admin-login'
     | '/claim'
     | '/claim-submitted'
     | '/contact'
@@ -150,6 +174,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   ClaimRoute: typeof ClaimRoute
   ClaimSubmittedRoute: typeof ClaimSubmittedRoute
   ContactRoute: typeof ContactRoute
@@ -174,6 +200,20 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-login': {
+      id: '/admin-login'
+      path: '/admin-login'
+      fullPath: '/admin-login'
+      preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/claim': {
@@ -238,6 +278,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRoute,
+  AdminLoginRoute: AdminLoginRoute,
   ClaimRoute: ClaimRoute,
   ClaimSubmittedRoute: ClaimSubmittedRoute,
   ContactRoute: ContactRoute,

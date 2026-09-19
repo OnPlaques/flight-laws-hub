@@ -33,7 +33,7 @@ function Submitted() {
           </p>
         ) : null}
         <Button asChild className="mt-8 bg-navy text-navy-foreground hover:bg-navy-deep">
-          <Link to="/dashboard">Go to Dashboard</Link>
+          <Link to="/">Return home</Link>
         </Button>
       </div>
     </PageShell>

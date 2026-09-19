@@ -59,6 +59,7 @@ export function SiteFooter() {
             <li><Link to="/about" className="text-navy-foreground/80 hover:text-navy-foreground">About Us</Link></li>
             <li><span className="text-navy-foreground/80">Privacy Policy</span></li>
             <li><span className="text-navy-foreground/80">Terms of Service</span></li>
+            <li><Link to="/admin-login" className="text-navy-foreground/80 hover:text-navy-foreground">Admin</Link></li>
           </ul>
         </div>
       </div>
