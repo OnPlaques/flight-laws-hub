@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, BriefcaseBusiness, CalendarDays, CheckCircle2, FileText, Headphones, Lock, Plane, Search, ShieldCheck, Star, Users, WalletCards, XCircle } from "lucide-react";
-import heroImage from "@/assets/flightclaim-airport-hero.jpg";
+import heroImage from "@/assets/flightclaim-professional-hero.jpg";
 import wingImage from "@/assets/flightclaim-wing.jpg";
 import { PageShell } from "@/components/site/page-shell";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,19 @@ const testimonials = [
   { name: "Amina M.", place: "Dubai, UAE", quote: "I got my refund after my flight was cancelled. The team was professional, helpful and responsive. Thank you Flightclaim!" },
 ];
 
+const featuredAirlines = [
+  { name: "Emirates", logo: "/airlines/emirates.svg" },
+  { name: "Qatar Airways", logo: "/airlines/qatarairways.svg" },
+  { name: "British Airways", logo: "/airlines/britishairways.svg" },
+  { name: "Lufthansa", logo: "/airlines/lufthansa.svg" },
+  { name: "Air France", logo: "/airlines/airfrance.svg" },
+  { name: "Turkish Airlines", logo: "/airlines/turkishairlines.svg" },
+  { name: "Southwest Airlines", logo: "/airlines/southwestairlines.svg" },
+  { name: "easyJet", logo: "/airlines/easyjet.svg" },
+  { name: "Ryanair", logo: "/airlines/ryanair.svg" },
+  { name: "United Airlines", logo: "/airlines/unitedairlines.svg" },
+];
+
 function Landing() {
   const navigate = useNavigate();
   const [flight, setFlight] = useState("");
@@ -48,8 +61,8 @@ function Landing() {
 
   return <PageShell>
     <section className="relative isolate overflow-hidden border-b border-border">
-      <img src={heroImage} alt="Traveler looking at an aircraft through an airport window" width={1536} height={864} decoding="async" fetchPriority="high" className="absolute inset-0 size-full object-cover object-[62%_center]" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/5" />
+      <img src={heroImage} alt="Professional traveler at an international airport with an aircraft at the gate" width={1536} height={864} decoding="async" fetchPriority="high" className="absolute inset-0 size-full object-cover object-[64%_center]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/15" />
       <div className="relative mx-auto grid min-h-[590px] max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.08fr_0.82fr]">
         <div className="max-w-xl text-navy">
           <h1 className="text-4xl font-extrabold leading-[1.12] sm:text-5xl lg:text-[3.45rem]">Flight Delayed?<br />Cancelled? Overbooked?<br /><span className="text-brand-blue">You could be entitled to compensation.</span></h1>
@@ -61,6 +74,28 @@ function Landing() {
           <div className="mt-5 space-y-3"><div className="relative"><Plane className="absolute left-3 top-3 size-4 text-brand-blue"/><Input aria-label="Flight number" className="pl-10" placeholder="Flight number (e.g. BA256)" value={flight} onChange={e=>setFlight(e.target.value)} /></div><div className="relative"><CalendarDays className="absolute left-3 top-3 size-4 text-brand-blue"/><Input aria-label="Date of flight" className="pl-10" type="date" value={date} onChange={e=>setDate(e.target.value)} /></div><Select value={departure} onValueChange={setDeparture}><SelectTrigger aria-label="Departure airport"><SelectValue placeholder="Departure airport" /></SelectTrigger><SelectContent>{AIRPORT_GROUPS.flatMap(g=>g.airports).map(a=><SelectItem key={a.iata} value={`${a.city} (${a.iata})`}>{a.city} ({a.iata})</SelectItem>)}</SelectContent></Select></div>
           <Button type="submit" className="mt-4 w-full gap-2 bg-brand-blue text-primary-foreground hover:bg-brand-blue/90">Check Eligibility <ArrowRight className="size-4"/></Button><p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground"><Lock className="size-3"/>Your information is safe and secure.</p>
         </form>
+      </div>
+    </section>
+
+    <section className="border-b border-border bg-background py-8" aria-labelledby="featured-airlines-title">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="flex flex-col gap-1 text-center sm:flex-row sm:items-baseline sm:justify-center sm:gap-2">
+          <h2 id="featured-airlines-title" className="text-sm font-extrabold text-navy">Claims across leading airlines</h2>
+          <p className="text-xs text-muted-foreground">Select an airline to start checking your flight</p>
+        </div>
+        <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-5">
+          {featuredAirlines.map((airline) => (
+            <Link
+              key={airline.name}
+              to="/claim"
+              aria-label={`Start a claim for ${airline.name}`}
+              className="group flex min-h-24 items-center justify-center gap-3 bg-card px-3 py-4 transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-inset"
+            >
+              <img src={airline.logo} alt="" width={36} height={36} loading="lazy" className="size-8 shrink-0 object-contain opacity-75 transition group-hover:opacity-100" />
+              <span className="text-sm font-bold leading-tight text-navy transition-colors group-hover:text-brand-blue">{airline.name}</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
 
