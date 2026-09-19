@@ -167,12 +167,29 @@ export function detectAirlineJurisdiction(airlineName: string): Jurisdiction {
   if (!target) return "OTHER";
   for (const group of AIRLINE_GROUPS) {
     for (const airline of group.airlines) {
-      if (normalise(airline.name) === target || target.includes(normalise(airline.name))) {
-        if (normalise(airline.name).includes("turkish")) return "TR";
+      const name = normalise(airline.name);
+      if (name === target || target.includes(name) || (target.length >= 4 && name.includes(target))) {
+        if (name.includes("turkish")) return "TR";
         return GROUP_JURISDICTION[group.label] ?? "OTHER";
       }
     }
   }
+  // Nearest known airline by edit distance — catches typos like "lufthanzsa".
+  let best: { jurisdiction: Jurisdiction; score: number } | null = null;
+  for (const group of AIRLINE_GROUPS) {
+    for (const airline of group.airlines) {
+      const name = normalise(airline.name);
+      const d = distance(target, name);
+      const allowed = name.length >= 10 ? 3 : name.length >= 6 ? 2 : 1;
+      if (d <= allowed && (!best || d < best.score)) {
+        best = {
+          jurisdiction: name.includes("turkish") ? "TR" : (GROUP_JURISDICTION[group.label] ?? "OTHER"),
+          score: d,
+        };
+      }
+    }
+  }
+  if (best) return best.jurisdiction;
   if (target.includes("turkish") || target.includes("pegasus")) return "TR";
   return "OTHER";
 }
