@@ -170,8 +170,26 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
+  main {
+    animation: page-enter 180ms ease-out both;
+  }
+
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     letter-spacing: 0;
   }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  main { animation: none; }
 }

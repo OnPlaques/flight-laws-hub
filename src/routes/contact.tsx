@@ -2,7 +2,6 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Mail, MapPin } from "lucide-react";
 import { PageHero, PageShell } from "@/components/site/page-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,13 +44,8 @@ function Contact() {
   return (
     <PageShell>
       <PageHero title="Contact" subtitle="Questions about a claim, a payout or your rights? We're here." />
-      <section className="mx-auto grid max-w-5xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-[1fr_1.2fr]">
-        <div className="space-y-4 text-sm text-muted-foreground">
-          <p className="flex items-center gap-2"><Mail className="size-4 text-brand-blue" /> <a href="mailto:jetclaimsupport@gmail.com" className="hover:text-brand-blue hover:underline">jetclaimsupport@gmail.com</a></p>
-          <p className="flex items-center gap-2"><MapPin className="size-4 text-brand-blue" /> London · Berlin · Toronto</p>
-        </div>
-
-        <form onSubmit={submit} className="space-y-4 rounded-xl border border-border bg-card p-6">
+      <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+        <form onSubmit={submit} className="space-y-4 rounded-lg border border-border bg-card p-6">
           <div className="space-y-1.5">
             <Label htmlFor="cname">Name</Label>
             <Input id="cname" maxLength={100} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />

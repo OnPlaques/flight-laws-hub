@@ -14,11 +14,11 @@ export const Route = createFileRoute("/faqs")({
       { name: "description", content: "Answers to the most common questions about flight compensation claims, fees, timelines and payouts." },
       { property: "og:title", content: "Flightclaim FAQs" },
       { property: "og:description", content: "Fees, timelines, eligibility and payouts explained." },
-      { property: "og:url", content: "https://jetclaim-assist.lovable.app/faqs" },
+      { property: "og:url", content: "https://flight-laws-hub.lovable.app/faqs" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://jetclaim-assist.lovable.app/faqs" }],
+    links: [{ rel: "canonical", href: "https://flight-laws-hub.lovable.app/faqs" }],
     scripts: [
       {
         type: "application/ld+json",

@@ -4,7 +4,7 @@ import { PageHero, PageShell } from "@/components/site/page-shell";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Flightclaim — We Fight. You Fly." },
+      { title: "About Flightclaim — Your Journey. Your Rights." },
       { name: "description", content: "Flightclaim is an international flight complaint and compensation service fighting for passengers across every major aviation jurisdiction." },
       { property: "og:title", content: "About Flightclaim" },
       { property: "og:description", content: "Who we are and why we fight for passengers." },
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/about")({
 function About() {
   return (
     <PageShell>
-      <PageHero title="About Us" subtitle="We Fight. You Fly." />
+      <PageHero title="About Us" subtitle="Your Journey. Your Rights." />
       <section className="mx-auto max-w-3xl space-y-6 px-4 py-16 text-muted-foreground sm:px-6">
         <p>
           Flightclaim was founded by frequent flyers who were tired of watching airlines quietly ignore
