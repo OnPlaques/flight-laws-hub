@@ -63,7 +63,13 @@ export const submitClaim = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { files, ...claimData } = data;
-    const { data: claim, error } = await supabaseAdmin.from("claims").insert({ ...claimData, flight_number: claimData.flight_number.toUpperCase() }).select("id,reference").single();
+    const { data: claim, error } = await supabaseAdmin.from("claims").insert({
+      ...claimData,
+      description: claimData.description ?? null,
+      regulation_code: claimData.regulation_code ?? null,
+      phone: claimData.phone ?? null,
+      flight_number: claimData.flight_number.toUpperCase(),
+    }).select("id,reference").single();
     if (error || !claim) throw new Error("Your claim could not be submitted. Please try again.");
     for (const file of files) {
       const bytes = Buffer.from(file.data, "base64");
