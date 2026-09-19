@@ -32,9 +32,17 @@ function Submitted() {
             Your claim reference: <span className="font-bold text-navy">{ref}</span>
           </p>
         ) : null}
-        <Button asChild className="mt-8 bg-navy text-navy-foreground hover:bg-navy-deep">
-          <Link to="/">Return home</Link>
-        </Button>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Keep this reference — you can follow every stage of your claim on the tracking page.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Button asChild className="bg-navy text-navy-foreground hover:bg-navy-deep">
+            <Link to="/track">Track my claim</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link to="/">Return home</Link>
+          </Button>
+        </div>
       </div>
     </PageShell>
   );
