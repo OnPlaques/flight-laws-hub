@@ -1,19 +1,27 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { useSession } from "@tanstack/react-start/server";
+import { useSession, getRequest } from "@tanstack/react-start/server";
 import { createHash, timingSafeEqual } from "node:crypto";
 
 type AdminSession = { admin?: boolean };
 
 function getSessionConfig() {
+  // The published/preview site renders inside a cross-site frame, so the cookie
+  // must be SameSite=None + Secure there. Plain http (local dev) can't use that.
+  let https = false;
+  try {
+    https = new URL(getRequest().url).protocol === "https:";
+  } catch {
+    https = false;
+  }
   return {
     password: process.env['SESSION_SECRET']!,
-    name: "jetclaim-admin",
+    name: "flightclaim-admin",
     maxAge: 60 * 60 * 12,
     cookie: {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax" as const,
+      secure: https,
+      sameSite: (https ? "none" : "lax") as "none" | "lax",
       path: "/",
     },
   };
