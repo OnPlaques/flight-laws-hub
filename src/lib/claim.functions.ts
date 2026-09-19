@@ -31,7 +31,7 @@ async function requireAdmin() {
 }
 
 export const adminLogin = createServerFn({ method: "POST" })
-  .inputValidator((data) => z.object({ password: z.string().max(100) }).parse(data))
+  .validator((data) => z.object({ password: z.string().max(100) }).parse(data))
   .handler(async ({ data }) => {
     const expected = process.env['ADMIN_PASSWORD'];
     if (!expected || !safeMatch(data.password, expected)) return { ok: false as const };
@@ -67,7 +67,7 @@ const claimSchema = z.object({
 });
 
 export const submitClaim = createServerFn({ method: "POST" })
-  .inputValidator((data) => claimSchema.parse(data))
+  .validator((data) => claimSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { files, ...claimData } = data;
@@ -97,7 +97,7 @@ export const listAdminClaims = createServerFn({ method: "GET" }).handler(async (
 });
 
 export const updateClaimStatus = createServerFn({ method: "POST" })
-  .inputValidator((data) => z.object({ id: z.string().uuid(), status: z.enum(["Submitted", "Under Review", "Forwarded to Airline", "Awaiting Payout", "Resolved", "Closed"]) }).parse(data))
+  .validator((data) => z.object({ id: z.string().uuid(), status: z.enum(["Submitted", "Under Review", "Forwarded to Airline", "Awaiting Payout", "Resolved", "Closed"]) }).parse(data))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
