@@ -33,16 +33,16 @@ export const Route = createFileRoute("/claim")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "File a Flight Claim — JetClaim" },
+      { title: "File a Flight Claim — Flightclaim" },
       {
         name: "description",
         content:
           "Start your flight compensation claim in minutes: add your flight details, describe what happened and upload your documents.",
       },
-      { property: "og:title", content: "File a Flight Claim — JetClaim" },
+      { property: "og:title", content: "File a Flight Claim — Flightclaim" },
       {
         property: "og:description",
-        content: "Submit your delay, cancellation or baggage claim to JetClaim in under 3 minutes.",
+        content: "Submit your delay, cancellation or baggage claim to Flightclaim in under 3 minutes.",
       },
     ],
   }),
@@ -135,7 +135,7 @@ function ClaimForm() {
     if (step === 3) {
       const parsed = contactSchema.safeParse(form);
       if (!parsed.success) { toast.error(parsed.error.issues[0]!.message); return; }
-      if (!authorized) { toast.error("Please authorize JetClaim to act on your behalf."); return; }
+      if (!authorized) { toast.error("Please authorize Flightclaim to act on your behalf."); return; }
     }
     setStep((s) => Math.min(s + 1, STEPS.length - 1));
   }
@@ -395,7 +395,7 @@ function ClaimForm() {
                 </div>
                 <label className="flex items-start gap-3 rounded-lg border border-border p-4 text-sm">
                   <Checkbox checked={authorized} onCheckedChange={(v) => setAuthorized(v === true)} />
-                  I authorize JetClaim to act on my behalf regarding this claim.
+                  I authorize Flightclaim to act on my behalf regarding this claim.
                 </label>
               </>
             ) : null}

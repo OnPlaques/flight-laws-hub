@@ -4,9 +4,9 @@ import { PageHero, PageShell } from "@/components/site/page-shell";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About JetClaim — We Fight. You Fly." },
-      { name: "description", content: "JetClaim is an international flight complaint and compensation service fighting for passengers across every major aviation jurisdiction." },
-      { property: "og:title", content: "About JetClaim" },
+      { title: "About Flightclaim — We Fight. You Fly." },
+      { name: "description", content: "Flightclaim is an international flight complaint and compensation service fighting for passengers across every major aviation jurisdiction." },
+      { property: "og:title", content: "About Flightclaim" },
       { property: "og:description", content: "Who we are and why we fight for passengers." },
       { property: "og:url", content: "https://jetclaim-assist.lovable.app/about" },
       { property: "og:type", content: "website" },
@@ -23,7 +23,7 @@ function About() {
       <PageHero title="About Us" subtitle="We Fight. You Fly." />
       <section className="mx-auto max-w-3xl space-y-6 px-4 py-16 text-muted-foreground sm:px-6">
         <p>
-          JetClaim was founded by frequent flyers who were tired of watching airlines quietly ignore
+          Flightclaim was founded by frequent flyers who were tired of watching airlines quietly ignore
           the rights passengers already have. Compensation rules exist in almost every major
           aviation market — but they are written for lawyers, not travellers.
         </p>

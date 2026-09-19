@@ -21,7 +21,7 @@ export function SiteFooter() {
         <div className="md:col-span-2">
           <Logo invert />
           <p className="mt-4 max-w-sm text-sm text-navy-foreground/70">
-            JetClaim helps air passengers worldwide file complaints and recover the compensation
+            Flightclaim helps air passengers worldwide file complaints and recover the compensation
             and refunds they are entitled to under international aviation regulations.
           </p>
           <div className="mt-5 flex gap-3">
@@ -65,7 +65,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-navy-foreground/10">
         <p className="mx-auto max-w-7xl px-4 py-6 text-xs text-navy-foreground/60 sm:px-6">
-          © {new Date().getFullYear()} JetClaim. All rights reserved. JetClaim is not a law firm and
+          © {new Date().getFullYear()} Flightclaim. All rights reserved. Flightclaim is not a law firm and
           does not provide legal advice.
         </p>
       </div>

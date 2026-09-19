@@ -78,21 +78,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "JetClaim — Flight Compensation & Refund Claims" },
-      { name: "description", content: "JetClaim helps flyers claim compensation and refunds for delays, cancellations and lost baggage worldwide." },
-      { name: "author", content: "JetClaim" },
-      { property: "og:title", content: "JetClaim — We Fight. You Fly." },
+      { title: "Flightclaim — Flight Compensation & Refund Claims" },
+      { name: "description", content: "Flightclaim helps flyers claim compensation and refunds for delays, cancellations and lost baggage worldwide." },
+      { name: "author", content: "Flightclaim" },
+      { property: "og:title", content: "Flightclaim — We Fight. You Fly." },
       { property: "og:description", content: "File a flight complaint and claim compensation under international aviation regulations." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@JetClaim" },
+      { name: "twitter:site", content: "@Flightclaim" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
