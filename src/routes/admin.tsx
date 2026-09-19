@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowRightCircle, Bell, Download, FileText, Loader2, LogOut, Plane, RefreshCw, WalletCards } from "lucide-react";
+import { ArrowRightCircle, Bell, Download, Loader2, LogOut, Plane, RefreshCw, WalletCards } from "lucide-react";
 import { adminLogout, advanceClaim, generateClaimLetter, getAdminSession, listAdminClaims, updateClaimStatus } from "@/lib/claim.functions";
 import { Logo } from "@/components/site/logo";
 import { Button } from "@/components/ui/button";
