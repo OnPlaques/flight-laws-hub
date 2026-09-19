@@ -81,11 +81,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Flightclaim — Flight Compensation & Refund Claims" },
       { name: "description", content: "Flightclaim helps flyers claim compensation and refunds for delays, cancellations and lost baggage worldwide." },
       { name: "author", content: "Flightclaim" },
-      { property: "og:title", content: "Flightclaim — We Fight. You Fly." },
+      { property: "og:title", content: "Flightclaim — Your Journey. Your Rights." },
       { property: "og:description", content: "File a flight complaint and claim compensation under international aviation regulations." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Flightclaim" },
     ],
     links: [
       {

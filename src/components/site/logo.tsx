@@ -29,7 +29,7 @@ export function Logo({
               invert ? "text-navy-foreground/70" : "text-muted-foreground",
             )}
           >
-            We Fight. You Fly.
+            Your Journey. Your Rights.
           </span>
         ) : null}
       </span>
