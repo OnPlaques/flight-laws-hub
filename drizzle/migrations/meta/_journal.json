@@ -8,6 +8,13 @@
       "when": 1789825510118,
       "tag": "0000_create_jetclaim_claims",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789825533332,
+      "tag": "0001_secure_claim_documents",
+      "breakpoints": true
     }
   ]
 }
