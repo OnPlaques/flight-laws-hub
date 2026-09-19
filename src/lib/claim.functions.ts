@@ -3,13 +3,21 @@ import { z } from "zod";
 import { useSession } from "@tanstack/react-start/server";
 import { createHash, timingSafeEqual } from "node:crypto";
 
-const sessionConfig = {
-  password: process.env['SESSION_SECRET']!,
-  name: "jetclaim-admin",
-  maxAge: 60 * 60 * 12,
-  cookie: { httpOnly: true, secure: true, sameSite: "lax" as const, path: "/" },
-};
 type AdminSession = { admin?: boolean };
+
+function getSessionConfig() {
+  return {
+    password: process.env['SESSION_SECRET']!,
+    name: "jetclaim-admin",
+    maxAge: 60 * 60 * 12,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax" as const,
+      path: "/",
+    },
+  };
+}
 
 function safeMatch(input: string, expected: string) {
   const a = createHash("sha256").update(input).digest();
@@ -18,7 +26,7 @@ function safeMatch(input: string, expected: string) {
 }
 
 async function requireAdmin() {
-  const session = await useSession<AdminSession>(sessionConfig);
+  const session = await useSession<AdminSession>(getSessionConfig());
   if (!session.data.admin) throw new Response("Unauthorized", { status: 401 });
 }
 
@@ -27,19 +35,19 @@ export const adminLogin = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const expected = process.env['ADMIN_PASSWORD'];
     if (!expected || !safeMatch(data.password, expected)) return { ok: false as const };
-    const session = await useSession<AdminSession>(sessionConfig);
+    const session = await useSession<AdminSession>(getSessionConfig());
     await session.update({ admin: true });
     return { ok: true as const };
   });
 
 export const adminLogout = createServerFn({ method: "POST" }).handler(async () => {
-  const session = await useSession<AdminSession>(sessionConfig);
+  const session = await useSession<AdminSession>(getSessionConfig());
   await session.clear();
   return { ok: true };
 });
 
 export const getAdminSession = createServerFn({ method: "GET" }).handler(async () => {
-  const session = await useSession<AdminSession>(sessionConfig);
+  const session = await useSession<AdminSession>(getSessionConfig());
   return { admin: session.data.admin === true };
 });
 
