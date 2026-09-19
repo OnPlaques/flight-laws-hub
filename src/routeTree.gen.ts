@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ClaimRouteImport } from './routes/claim'
+import { Route as ClaimSubmittedRouteImport } from './routes/claim-submitted'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FaqsRouteImport } from './routes/faqs'
+import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as RegulationsRouteImport } from './routes/regulations'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as YourRightsRouteImport } from './routes/your-rights'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClaimRoute = ClaimRouteImport.update({
+  id: '/claim',
+  path: '/claim',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClaimSubmittedRoute = ClaimSubmittedRouteImport.update({
+  id: '/claim-submitted',
+  path: '/claim-submitted',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqsRoute = FaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegulationsRoute = RegulationsRouteImport.update({
+  id: '/regulations',
+  path: '/regulations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const YourRightsRoute = YourRightsRouteImport.update({
+  id: '/your-rights',
+  path: '/your-rights',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/claim': typeof ClaimRoute
+  '/claim-submitted': typeof ClaimSubmittedRoute
+  '/contact': typeof ContactRoute
+  '/faqs': typeof FaqsRoute
+  '/how-it-works': typeof HowItWorksRoute
+  '/regulations': typeof RegulationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/your-rights': typeof YourRightsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/claim': typeof ClaimRoute
+  '/claim-submitted': typeof ClaimSubmittedRoute
+  '/contact': typeof ContactRoute
+  '/faqs': typeof FaqsRoute
+  '/how-it-works': typeof HowItWorksRoute
+  '/regulations': typeof RegulationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/your-rights': typeof YourRightsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/claim': typeof ClaimRoute
+  '/claim-submitted': typeof ClaimSubmittedRoute
+  '/contact': typeof ContactRoute
+  '/faqs': typeof FaqsRoute
+  '/how-it-works': typeof HowItWorksRoute
+  '/regulations': typeof RegulationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/your-rights': typeof YourRightsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/claim'
+    | '/claim-submitted'
+    | '/contact'
+    | '/faqs'
+    | '/how-it-works'
+    | '/regulations'
+    | '/sitemap.xml'
+    | '/your-rights'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/claim'
+    | '/claim-submitted'
+    | '/contact'
+    | '/faqs'
+    | '/how-it-works'
+    | '/regulations'
+    | '/sitemap.xml'
+    | '/your-rights'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/claim'
+    | '/claim-submitted'
+    | '/contact'
+    | '/faqs'
+    | '/how-it-works'
+    | '/regulations'
+    | '/sitemap.xml'
+    | '/your-rights'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ClaimRoute: typeof ClaimRoute
+  ClaimSubmittedRoute: typeof ClaimSubmittedRoute
+  ContactRoute: typeof ContactRoute
+  FaqsRoute: typeof FaqsRoute
+  HowItWorksRoute: typeof HowItWorksRoute
+  RegulationsRoute: typeof RegulationsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  YourRightsRoute: typeof YourRightsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/claim': {
+      id: '/claim'
+      path: '/claim'
+      fullPath: '/claim'
+      preLoaderRoute: typeof ClaimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/claim-submitted': {
+      id: '/claim-submitted'
+      path: '/claim-submitted'
+      fullPath: '/claim-submitted'
+      preLoaderRoute: typeof ClaimSubmittedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faqs': {
+      id: '/faqs'
+      path: '/faqs'
+      fullPath: '/faqs'
+      preLoaderRoute: typeof FaqsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regulations': {
+      id: '/regulations'
+      path: '/regulations'
+      fullPath: '/regulations'
+      preLoaderRoute: typeof RegulationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/your-rights': {
+      id: '/your-rights'
+      path: '/your-rights'
+      fullPath: '/your-rights'
+      preLoaderRoute: typeof YourRightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ClaimRoute: ClaimRoute,
+  ClaimSubmittedRoute: ClaimSubmittedRoute,
+  ContactRoute: ContactRoute,
+  FaqsRoute: FaqsRoute,
+  HowItWorksRoute: HowItWorksRoute,
+  RegulationsRoute: RegulationsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  YourRightsRoute: YourRightsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
