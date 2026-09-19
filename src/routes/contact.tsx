@@ -12,9 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact JetClaim — Talk to Our Claims Team" },
-      { name: "description", content: "Get in touch with the JetClaim team about a flight complaint, an existing claim or a payout question." },
-      { property: "og:title", content: "Contact JetClaim" },
+      { title: "Contact Flightclaim — Talk to Our Claims Team" },
+      { name: "description", content: "Get in touch with the Flightclaim team about a flight complaint, an existing claim or a payout question." },
+      { property: "og:title", content: "Contact Flightclaim" },
       { property: "og:description", content: "Our claims team replies within 40 minutes, open Monday to Sunday." },
       { property: "og:url", content: "https://jetclaim-assist.lovable.app/contact" },
       { property: "og:type", content: "website" },

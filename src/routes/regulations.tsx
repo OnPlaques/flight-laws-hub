@@ -8,8 +8,8 @@ import { REGULATION_DETAILS, type RegulationDetail } from "@/lib/jetclaim";
 export const Route = createFileRoute("/regulations")({
   head: () => ({
     meta: [
-      { title: "International Aviation Regulations We Cover — JetClaim" },
-      { name: "description", content: "All 8 passenger-rights regimes JetClaim works with: EU261, UK261, US DOT, Canada APPR, India DGCA, Brazil ANAC, Turkey SHY and the Montreal Convention." },
+      { title: "International Aviation Regulations We Cover — Flightclaim" },
+      { name: "description", content: "All 8 passenger-rights regimes Flightclaim works with: EU261, UK261, US DOT, Canada APPR, India DGCA, Brazil ANAC, Turkey SHY and the Montreal Convention." },
       { property: "og:title", content: "International Aviation Regulations We Cover" },
       { property: "og:description", content: "Trigger conditions, coverage, compensation amounts and claim deadlines across eight passenger-rights regimes." },
       { property: "og:url", content: "https://jetclaim-assist.lovable.app/regulations" },
@@ -29,7 +29,7 @@ function Regulations() {
     <PageShell>
       <PageHero
         title="International Aviation Regulations We Cover"
-        subtitle="JetClaim checks every claim against the regulation that applies to your route and airline."
+        subtitle="Flightclaim checks every claim against the regulation that applies to your route and airline."
       />
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
@@ -52,7 +52,7 @@ function Regulations() {
         </div>
 
         <p className="mt-12 rounded-lg border border-border bg-surface px-4 py-3 text-xs text-muted-foreground">
-          Regulation details are provided for informational purposes. Actual eligibility is confirmed by JetClaim after
+          Regulation details are provided for informational purposes. Actual eligibility is confirmed by Flightclaim after
           reviewing your specific claim.
         </p>
       </section>

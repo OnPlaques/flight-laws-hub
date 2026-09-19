@@ -12,9 +12,9 @@ import {
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     meta: [
-      { title: "How JetClaim Works — 4 Steps to Compensation" },
-      { name: "description", content: "See how JetClaim takes your flight claim from submission to payout in four simple steps." },
-      { property: "og:title", content: "How JetClaim Works" },
+      { title: "How Flightclaim Works — 4 Steps to Compensation" },
+      { name: "description", content: "See how Flightclaim takes your flight claim from submission to payout in four simple steps." },
+      { property: "og:title", content: "How Flightclaim Works" },
       { property: "og:description", content: "From claim to payout in four simple steps." },
       { property: "og:url", content: "https://jetclaim-assist.lovable.app/how-it-works" },
       { property: "og:type", content: "website" },
@@ -51,7 +51,7 @@ const STEPS = [
 const FAQS = [
   { q: "How long does a claim take?", a: "Most claims are resolved in 4 to 12 weeks. Complex or escalated cases can take longer, and we keep you updated at every stage." },
   { q: "What documents do I need?", a: "Your booking confirmation and boarding pass are ideal. Baggage tags and receipts help for baggage or expense claims." },
-  { q: "How much does JetClaim charge?", a: "Our fee is agreed with you upfront before your claim proceeds — no hidden costs and no surprises." },
+  { q: "How much does Flightclaim charge?", a: "Our fee is agreed with you upfront before your claim proceeds — no hidden costs and no surprises." },
   { q: "What if my claim is unsuccessful?", a: "If your claim does not succeed, you owe nothing." },
 ];
 

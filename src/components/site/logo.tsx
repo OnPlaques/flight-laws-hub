@@ -23,7 +23,7 @@ export function Logo({
             invert ? "text-navy-foreground" : "text-navy",
           )}
         >
-          JetClaim
+          Flightclaim
         </span>
         {showTagline ? (
           <span

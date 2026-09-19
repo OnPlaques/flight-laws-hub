@@ -8,9 +8,9 @@ export const Route = createFileRoute("/claim-submitted")({
   validateSearch: z.object({ ref: z.string().max(30).optional() }),
   head: () => ({
     meta: [
-      { title: "Claim Submitted — JetClaim" },
-      { name: "description", content: "Your JetClaim flight claim has been received and is now under review." },
-      { property: "og:title", content: "Claim Submitted — JetClaim" },
+      { title: "Claim Submitted — Flightclaim" },
+      { name: "description", content: "Your Flightclaim flight claim has been received and is now under review." },
+      { property: "og:title", content: "Claim Submitted — Flightclaim" },
       { property: "og:description", content: "Your flight claim reference and next steps." },
     ],
   }),

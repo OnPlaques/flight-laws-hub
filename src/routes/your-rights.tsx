@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/your-rights")({
   head: () => ({
     meta: [
-      { title: "Your Air Passenger Rights — JetClaim" },
+      { title: "Your Air Passenger Rights — Flightclaim" },
       { name: "description", content: "Plain-language guide to your rights after a delayed, cancelled or overbooked flight, region by region." },
       { property: "og:title", content: "Your Air Passenger Rights" },
       { property: "og:description", content: "What you are owed after a flight disruption, explained simply." },
