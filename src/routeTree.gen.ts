@@ -20,6 +20,7 @@ import { Route as FaqsRouteImport } from './routes/faqs'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as RegulationsRouteImport } from './routes/regulations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TrackRouteImport } from './routes/track'
 import { Route as YourRightsRouteImport } from './routes/your-rights'
 
 const IndexRoute = IndexRouteImport.update({
@@ -77,6 +78,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const YourRightsRoute = YourRightsRouteImport.update({
   id: '/your-rights',
   path: '/your-rights',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/regulations': typeof RegulationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/track': typeof TrackRoute
   '/your-rights': typeof YourRightsRoute
 }
 export interface FileRoutesByTo {
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/regulations': typeof RegulationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/track': typeof TrackRoute
   '/your-rights': typeof YourRightsRoute
 }
 export interface FileRoutesById {
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/regulations': typeof RegulationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/track': typeof TrackRoute
   '/your-rights': typeof YourRightsRoute
 }
 export interface FileRouteTypes {
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/regulations'
     | '/sitemap.xml'
+    | '/track'
     | '/your-rights'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/regulations'
     | '/sitemap.xml'
+    | '/track'
     | '/your-rights'
   id:
     | '__root__'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/regulations'
     | '/sitemap.xml'
+    | '/track'
     | '/your-rights'
   fileRoutesById: FileRoutesById
 }
@@ -183,6 +195,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   RegulationsRoute: typeof RegulationsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TrackRoute: typeof TrackRoute
   YourRightsRoute: typeof YourRightsRoute
 }
 
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/your-rights': {
       id: '/your-rights'
       path: '/your-rights'
@@ -287,6 +307,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   RegulationsRoute: RegulationsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TrackRoute: TrackRoute,
   YourRightsRoute: YourRightsRoute,
 }
 export const routeTree = rootRouteImport
