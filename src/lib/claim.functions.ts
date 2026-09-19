@@ -104,12 +104,89 @@ export const listAdminClaims = createServerFn({ method: "GET" }).handler(async (
   return data;
 });
 
+export const CLAIM_FLOW = ["Submitted", "Under Review", "Forwarded to Airline", "Awaiting Payout", "Resolved", "Closed"] as const;
+export type ClaimStage = typeof CLAIM_FLOW[number];
+
 export const updateClaimStatus = createServerFn({ method: "POST" })
-  .validator((data) => z.object({ id: z.string().uuid(), status: z.enum(["Submitted", "Under Review", "Forwarded to Airline", "Awaiting Payout", "Resolved", "Closed"]) }).parse(data))
+  .validator((data) => z.object({ id: z.string().uuid(), status: z.enum(CLAIM_FLOW) }).parse(data))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("claims").update({ status: data.status, updated_at: new Date().toISOString() }).eq("id", data.id);
     if (error) throw error;
     return { ok: true };
+  });
+
+export const advanceClaim = createServerFn({ method: "POST" })
+  .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: claim, error: readError } = await supabaseAdmin.from("claims").select("status").eq("id", data.id).single();
+    if (readError || !claim) throw new Error("Claim not found.");
+    const index = CLAIM_FLOW.indexOf(claim.status as ClaimStage);
+    const next = CLAIM_FLOW[Math.min(index < 0 ? 1 : index + 1, CLAIM_FLOW.length - 1)]!;
+    const { error } = await supabaseAdmin.from("claims").update({ status: next, updated_at: new Date().toISOString() }).eq("id", data.id);
+    if (error) throw error;
+    return { status: next };
+  });
+
+export const generateClaimLetter = createServerFn({ method: "POST" })
+  .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: c, error } = await supabaseAdmin.from("claims").select("*").eq("id", data.id).single();
+    if (error || !c) throw new Error("Claim not found.");
+    const today = new Date().toISOString().slice(0, 10);
+    const amount = c.compensation_amount ? `${c.compensation_currency} ${c.compensation_amount}` : "the full statutory amount due";
+    const content = `FLIGHTCLAIM
+Passenger compensation claim letter
+Date: ${today}
+Claim reference: ${c.reference}
+
+To: ${c.airline_name} — Customer Relations / Legal Department
+
+Subject: Compensation claim for flight ${c.flight_number} on ${c.flight_date} under ${c.regulation_code || "applicable air passenger rights law"}
+
+Dear Sir or Madam,
+
+We act on behalf of ${c.full_name} in respect of flight ${c.flight_number} from ${c.departure_airport} to ${c.arrival_airport}, scheduled on ${c.flight_date}.
+
+The passenger's journey was affected by the following disruption: ${c.issue_type}.
+${c.description ? `\nPassenger account of events:\n${c.description}\n` : ""}
+On the basis of ${c.regulation_code || "the applicable air passenger rights regulation"}, the passenger is entitled to compensation of ${amount}, together with any reimbursable expenses arising from the disruption.
+
+We therefore request that you:
+1. Confirm receipt of this claim within 14 days.
+2. Provide the operational reason for the disruption, with supporting documentation.
+3. Settle the compensation due to the passenger via the details we will supply on confirmation.
+
+Should the claim remain unanswered or be declined without a valid extraordinary-circumstances justification, we reserve the right to escalate the matter to the competent national enforcement body and to pursue legal remedies.
+
+Passenger contact of record: ${c.email}${c.phone ? ` / ${c.phone}` : ""}
+Current claim status: ${c.status}
+
+Yours faithfully,
+
+Claims Department
+Flightclaim
+`;
+    return { fileName: `flightclaim-letter-${c.reference}.txt`, content };
+  });
+
+const trackSchema = z.object({ reference: z.string().trim().min(4).max(30), email: z.string().trim().email().max(255) });
+
+export const trackClaim = createServerFn({ method: "POST" })
+  .validator((data) => trackSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: claim } = await supabaseAdmin
+      .from("claims")
+      .select("reference,full_name,airline_name,flight_number,flight_date,departure_airport,arrival_airport,issue_type,regulation_code,status,compensation_amount,compensation_currency,created_at,updated_at")
+      .eq("reference", data.reference.toUpperCase())
+      .ilike("email", data.email)
+      .maybeSingle();
+    if (!claim) return { found: false as const };
+    return { found: true as const, claim };
   });
