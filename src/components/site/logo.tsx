@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Plane } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Logo({
@@ -12,10 +11,8 @@ export function Logo({
   showTagline?: boolean;
 }) {
   return (
-    <Link to="/" className={cn("flex items-center gap-2.5", className)}>
-      <span className={cn("grid size-10 shrink-0 place-items-center rounded-md bg-brand-blue", invert ? "text-navy" : "text-primary-foreground")}>
-        <Plane className="size-5 -rotate-12" aria-hidden="true" />
-      </span>
+    <Link to="/" aria-label="Flightclaim home" className={cn("flex items-center gap-2.5", className)}>
+      <img src="/favicon.svg" alt="" className="size-10 shrink-0" aria-hidden="true" />
       <span className="leading-none">
         <span
           className={cn(
