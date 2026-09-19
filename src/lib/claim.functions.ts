@@ -12,7 +12,7 @@ function getSessionConfig() {
     maxAge: 60 * 60 * 12,
     cookie: {
       httpOnly: true,
-      secure: process.env['NODE_ENV'] === "production",
+      secure: false,
       sameSite: "lax" as const,
       path: "/",
     },
