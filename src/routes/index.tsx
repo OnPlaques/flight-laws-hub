@@ -7,7 +7,7 @@ import { PageShell } from "@/components/site/page-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AIRPORT_GROUPS } from "@/lib/jetclaim";
+import { AIRPORT_GROUPS, REGULATION_BADGES } from "@/lib/jetclaim";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -65,6 +65,35 @@ function Landing() {
     </section>
 
     <section className="bg-surface py-16"><div className="mx-auto max-w-7xl px-4 text-center sm:px-6"><p className="font-bold text-navy">You could be entitled to up to</p><p className="mt-1 text-5xl font-extrabold text-brand-blue">€600</p><p className="mt-2 text-xs text-muted-foreground">per person, depending on the situation and your flight distance.</p><div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">{disruptionTypes.map((item,i)=><div key={item.title} className={i ? "border-border lg:border-l lg:pl-8" : ""}><span className="mx-auto grid size-14 place-items-center rounded-full bg-brand-blue-soft text-brand-blue"><item.icon className="size-6"/></span><h3 className="mt-4 font-bold text-navy">{item.title}</h3><p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">{item.body}</p></div>)}</div></div></section>
+
+    <section className="border-y border-border bg-background py-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs font-bold uppercase text-brand-blue">Your flight may be protected</p>
+            <h2 className="mt-2 text-2xl font-extrabold text-navy">Regulations we cover</h2>
+          </div>
+          <Link to="/regulations" className="flex items-center gap-1.5 text-sm font-bold text-brand-blue hover:underline">View all flight laws <ArrowRight className="size-4" /></Link>
+        </div>
+        <div className="mt-7 flex gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 md:grid-cols-4">
+          {REGULATION_BADGES.map((reg) => (
+            <Link
+              key={reg.code}
+              to="/regulations"
+              hash={reg.code.toLowerCase()}
+              className="group flex min-w-56 items-center gap-3 rounded-lg border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-brand-blue/50 hover:shadow-md sm:min-w-0"
+            >
+              <span className="text-2xl" aria-hidden="true">{reg.flag}</span>
+              <span className="min-w-0">
+                <span className="block text-sm font-extrabold text-navy group-hover:text-brand-blue">{reg.label}</span>
+                <span className="mt-1 block text-xs leading-snug text-muted-foreground">{reg.detail}</span>
+              </span>
+              <ArrowRight className="ml-auto size-4 shrink-0 text-brand-blue" />
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <section className="py-18"><div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.72fr_1.5fr]"><div><p className="text-xs font-bold uppercase text-brand-blue">Simple process</p><h2 className="mt-2 text-3xl font-extrabold text-navy">How Flightclaim Works</h2><p className="mt-4 text-sm leading-relaxed text-muted-foreground">We handle the complex process so you don’t have to. From checking eligibility to getting your compensation, we’re with you every step of the way.</p><Button asChild className="mt-6 gap-2 bg-brand-blue text-primary-foreground hover:bg-brand-blue/90"><Link to="/claim">Start Your Claim <ArrowRight className="size-4"/></Link></Button></div><div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">{steps.map((item,i)=><div key={item.title} className="relative text-center"><span className="absolute right-0 top-0 grid size-7 place-items-center rounded-full bg-brand-blue text-xs font-bold text-primary-foreground">{i+1}</span><span className="mx-auto grid size-14 place-items-center rounded-full bg-surface text-brand-blue"><item.icon className="size-6"/></span><h3 className="mt-4 text-sm font-bold text-navy">{item.title}</h3><p className="mt-2 text-xs leading-relaxed text-muted-foreground">{item.body}</p></div>)}</div></div></section>
 

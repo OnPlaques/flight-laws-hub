@@ -62,7 +62,7 @@ function Regulations() {
 
 function RegulationCard({ reg }: { reg: RegulationDetail }) {
   return (
-    <Card className="h-full border-border">
+    <Card id={reg.code.toLowerCase()} className="h-full scroll-mt-24 border-border">
       <CardContent className="flex h-full flex-col gap-4 p-6">
         <div className="flex items-start gap-3">
           <span className="rounded-lg bg-navy px-2.5 py-1.5 text-xs font-bold tracking-wide text-navy-foreground">
