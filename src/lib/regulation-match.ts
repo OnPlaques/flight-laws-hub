@@ -106,6 +106,39 @@ function normalise(value: string) {
   return value.toLowerCase().trim();
 }
 
+/** Levenshtein distance, used to snap typos to the nearest known airport/airline. */
+function distance(a: string, b: string): number {
+  if (a === b) return 0;
+  if (!a.length) return b.length;
+  if (!b.length) return a.length;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const curr = [i];
+    for (let j = 1; j <= b.length; j++) {
+      curr[j] = Math.min(prev[j]! + 1, curr[j - 1]! + 1, prev[j - 1]! + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    prev = curr;
+  }
+  return prev[b.length]!;
+}
+
+/** Words in the input that are almost a known keyword (1-2 typos) match the nearest one. */
+function nearestKeywordJurisdiction(text: string): Jurisdiction | null {
+  const words = text.split(/[^a-z]+/).filter((w) => w.length >= 4);
+  let best: { jurisdiction: Jurisdiction; score: number } | null = null;
+  for (const word of words) {
+    for (const [keyword, jurisdiction] of KEYWORDS) {
+      for (const part of keyword.split(" ")) {
+        if (part.length < 4) continue;
+        const d = distance(word, part);
+        const allowed = part.length >= 8 ? 2 : 1;
+        if (d <= allowed && (!best || d < best.score)) best = { jurisdiction, score: d };
+      }
+    }
+  }
+  return best?.jurisdiction ?? null;
+}
+
 export function detectAirportJurisdiction(input: string): Region {
   const text = normalise(input);
   // Explicit IATA code, e.g. "London Heathrow (LHR)" or "LHR"
@@ -114,9 +147,18 @@ export function detectAirportJurisdiction(input: string): Region {
     const hit = AIRPORT_CODES[code];
     if (hit) return { jurisdiction: hit, label: JURISDICTION_LABEL[hit] };
   }
+  // Partial IATA-like tokens, e.g. "lhr" typed lowercase inside a word
+  const lowerTokens = text.match(/[a-z]{3}/g) ?? [];
+  for (const token of lowerTokens) {
+    const hit = AIRPORT_CODES[token.toUpperCase()];
+    if (hit) return { jurisdiction: hit, label: JURISDICTION_LABEL[hit] };
+  }
   for (const [keyword, jurisdiction] of KEYWORDS) {
     if (text.includes(keyword)) return { jurisdiction, label: JURISDICTION_LABEL[jurisdiction] };
   }
+  // Snap near-miss spellings ("londn", "pariss") to the nearest known region.
+  const near = nearestKeywordJurisdiction(text);
+  if (near) return { jurisdiction: near, label: JURISDICTION_LABEL[near] };
   return { jurisdiction: "OTHER", label: JURISDICTION_LABEL.OTHER };
 }
 
