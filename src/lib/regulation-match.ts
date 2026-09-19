@@ -147,10 +147,10 @@ export function detectAirportJurisdiction(input: string): Region {
     const hit = AIRPORT_CODES[code];
     if (hit) return { jurisdiction: hit, label: JURISDICTION_LABEL[hit] };
   }
-  // Partial IATA-like tokens, e.g. "lhr" typed lowercase inside a word
-  const lowerTokens = text.match(/[a-z]{3}/g) ?? [];
-  for (const token of lowerTokens) {
-    const hit = AIRPORT_CODES[token.toUpperCase()];
+  // Lowercase IATA code typed as its own word, e.g. "flying from lhr"
+  for (const word of text.split(/[^a-z]+/)) {
+    if (word.length !== 3) continue;
+    const hit = AIRPORT_CODES[word.toUpperCase()];
     if (hit) return { jurisdiction: hit, label: JURISDICTION_LABEL[hit] };
   }
   for (const [keyword, jurisdiction] of KEYWORDS) {
