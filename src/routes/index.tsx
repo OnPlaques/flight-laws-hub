@@ -68,6 +68,10 @@ function Landing() {
           <h1 className="text-4xl font-extrabold leading-[1.12] sm:text-5xl lg:text-[3.45rem]">Flight Cancelled?<br />Bumped? Delayed?<br /><span className="text-brand-blue">You could be owed a refund or compensation.</span></h1>
           <p className="mt-6 max-w-lg text-base font-medium leading-relaxed text-navy/75">Flightclaim helps US travelers claim the refunds and compensation they are entitled to under US DOT rules — quickly, easily and hassle-free.</p>
           <ul className="mt-8 flex flex-wrap gap-6 text-xs font-bold sm:text-sm">{[[ShieldCheck,"No win, no fee"],[Plane,"Fast & simple process"],[Users,"Built for US flyers"]].map(([Icon,label]) => { const I=Icon as typeof Plane; return <li key={String(label)} className="flex items-center gap-2"><I className="size-5 text-brand-blue" />{String(label)}</li>; })}</ul>
+          <Link to="/claim" className="mt-8 inline-flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-3 shadow-sm transition hover:border-brand-blue/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue">
+            <img src="/airlines/american-logo.png" alt="American Airlines" className="h-10 w-auto object-contain" />
+            <span className="flex items-center gap-2 border-l border-border pl-4 text-sm font-bold text-navy">Flying American? Start your claim <ArrowRight className="size-4 text-brand-blue" /></span>
+          </Link>
         </div>
         <form onSubmit={check} className="ml-auto w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-2xl sm:p-7">
           <h2 className="text-2xl font-extrabold text-navy">Check Your Flight</h2><p className="mt-1 text-sm text-muted-foreground">See if you’re eligible for a refund or compensation in less than 2 minutes.</p>
