@@ -22,7 +22,9 @@ export const Route = createFileRoute("/regulations")({
 });
 
 function Regulations() {
-  const regional = REGULATION_DETAILS.filter((r) => r.code !== "MONTREAL");
+  const regional = REGULATION_DETAILS.filter((r) => r.code !== "MONTREAL").sort(
+    (a, b) => Number(b.code === "USDOT") - Number(a.code === "USDOT"),
+  );
   const montreal = REGULATION_DETAILS.find((r) => r.code === "MONTREAL");
 
   return (

@@ -86,7 +86,7 @@ function TrackPage() {
         >
           <div className="space-y-2">
             <Label htmlFor="track-ref">Claim reference</Label>
-            <Input id="track-ref" placeholder="JC-XXXXXXXX" value={reference} onChange={(e) => setReference(e.target.value)} required />
+            <Input id="track-ref" placeholder="FC-XXXXXXXX" value={reference} onChange={(e) => setReference(e.target.value)} required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="track-email">Email address</Label>

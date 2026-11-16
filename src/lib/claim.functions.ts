@@ -1,9 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { useSession, getRequest } from "@tanstack/react-start/server";
-import { createHash, timingSafeEqual } from "node:crypto";
 
-type AdminSession = { admin?: boolean };
+type AdminSession = { admin?: boolean; userId?: string; email?: string };
 
 function getSessionConfig() {
   // The published/preview site renders inside a cross-site frame, so the cookie
@@ -27,24 +26,46 @@ function getSessionConfig() {
   };
 }
 
-function safeMatch(input: string, expected: string) {
-  const a = createHash("sha256").update(input).digest();
-  const b = createHash("sha256").update(expected).digest();
-  return timingSafeEqual(a, b);
+// An admin is a Supabase Auth user whose id is listed in public.admin_users.
+// Checked on every request so removing someone from the table cuts access at once.
+async function isActiveAdmin(userId?: string) {
+  if (!userId) return false;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin.from("admin_users").select("user_id").eq("user_id", userId).maybeSingle();
+  return !!data;
 }
 
 async function requireAdmin() {
   const session = await useSession<AdminSession>(getSessionConfig());
-  if (!session.data.admin) throw new Response("Unauthorized", { status: 401 });
+  if (!session.data.admin || !(await isActiveAdmin(session.data.userId))) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
 }
 
 export const adminLogin = createServerFn({ method: "POST" })
-  .validator((data) => z.object({ password: z.string().max(100) }).parse(data))
+  .validator((data) => z.object({ email: z.string().trim().email().max(255), password: z.string().min(1).max(200) }).parse(data))
   .handler(async ({ data }) => {
-    const expected = process.env['ADMIN_PASSWORD'];
-    if (!expected || !safeMatch(data.password, expected)) return { ok: false as const };
+    const url = process.env['SUPABASE_URL'];
+    const key = process.env['SUPABASE_PUBLISHABLE_KEY'];
+    if (!url || !key) throw new Error("Server is not configured.");
+    const { createClient } = await import("@supabase/supabase-js");
+    const authClient = createClient(url, key, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: {
+        // New-style publishable keys are not JWTs, so they must not be sent as a bearer token.
+        fetch: (input, init) => {
+          const headers = new Headers(init?.headers);
+          if (headers.get("Authorization") === `Bearer ${key}`) headers.delete("Authorization");
+          headers.set("apikey", key);
+          return fetch(input, { ...init, headers });
+        },
+      },
+    });
+    const { data: auth, error } = await authClient.auth.signInWithPassword({ email: data.email, password: data.password });
+    if (error || !auth.user) return { ok: false as const };
+    if (!(await isActiveAdmin(auth.user.id))) return { ok: false as const };
     const session = await useSession<AdminSession>(getSessionConfig());
-    await session.update({ admin: true });
+    await session.update({ admin: true, userId: auth.user.id, email: auth.user.email ?? data.email });
     return { ok: true as const };
   });
 
@@ -56,7 +77,8 @@ export const adminLogout = createServerFn({ method: "POST" }).handler(async () =
 
 export const getAdminSession = createServerFn({ method: "GET" }).handler(async () => {
   const session = await useSession<AdminSession>(getSessionConfig());
-  return { admin: session.data.admin === true };
+  const admin = session.data.admin === true && (await isActiveAdmin(session.data.userId));
+  return { admin, email: admin ? session.data.email ?? null : null };
 });
 
 const claimSchema = z.object({
@@ -162,7 +184,7 @@ We therefore request that you:
 2. Provide the operational reason for the disruption, with supporting documentation.
 3. Settle the compensation due to the passenger via the details we will supply on confirmation.
 
-Should the claim remain unanswered or be declined without a valid extraordinary-circumstances justification, we reserve the right to escalate the matter to the competent national enforcement body and to pursue legal remedies.
+Should the claim remain unanswered or be declined without a valid extraordinary-circumstances justification, we reserve the right to escalate the matter to the competent enforcement body, including the US Department of Transportation's Office of Aviation Consumer Protection where applicable, and to pursue legal remedies.
 
 Passenger contact of record: ${c.email}${c.phone ? ` / ${c.phone}` : ""}
 Current claim status: ${c.status}
