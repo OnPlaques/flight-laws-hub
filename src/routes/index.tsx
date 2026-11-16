@@ -40,16 +40,16 @@ const rights = [
 ];
 
 const featuredAirlines = [
-  { name: "American Airlines", logo: "/airlines/generic-plane.svg" },
-  { name: "Delta Air Lines", logo: "/airlines/generic-plane.svg" },
-  { name: "United Airlines", logo: "/airlines/unitedairlines.svg" },
-  { name: "Southwest Airlines", logo: "/airlines/southwestairlines.svg" },
-  { name: "JetBlue", logo: "/airlines/generic-plane.svg" },
-  { name: "Alaska Airlines", logo: "/airlines/generic-plane.svg" },
-  { name: "Spirit Airlines", logo: "/airlines/generic-plane.svg" },
-  { name: "Frontier Airlines", logo: "/airlines/generic-plane.svg" },
-  { name: "Hawaiian Airlines", logo: "/airlines/generic-plane.svg" },
-  { name: "Allegiant Air", logo: "/airlines/generic-plane.svg" },
+  { name: "American Airlines", logo: "/airlines/american-logo.png", wordmark: true },
+  { name: "Delta Air Lines", logo: "/airlines/delta-logo.png", wordmark: true },
+  { name: "United Airlines", logo: "/airlines/united-logo.png", wordmark: true },
+  { name: "Southwest Airlines", logo: "/airlines/southwest-logo.png", wordmark: true },
+  { name: "JetBlue", logo: "/airlines/jetblue-logo.png", wordmark: true },
+  { name: "Alaska Airlines", logo: "/airlines/generic-plane.svg", wordmark: false },
+  { name: "Spirit Airlines", logo: "/airlines/spirit-logo.png", wordmark: true },
+  { name: "Frontier Airlines", logo: "/airlines/frontier-logo.png", wordmark: true },
+  { name: "Hawaiian Airlines", logo: "/airlines/hawaiian-logo.png", wordmark: true },
+  { name: "Allegiant Air", logo: "/airlines/allegiant-logo.png", wordmark: true },
 ];
 
 function Landing() {
@@ -91,8 +91,14 @@ function Landing() {
               aria-label={`Start a claim for ${airline.name}`}
               className="group flex min-h-24 items-center justify-center gap-3 bg-card px-3 py-4 transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-inset"
             >
-              <img src={airline.logo} alt="" width={36} height={36} loading="lazy" className="size-8 shrink-0 object-contain opacity-75 transition group-hover:opacity-100" />
-              <span className="text-sm font-bold leading-tight text-navy transition-colors group-hover:text-brand-blue">{airline.name}</span>
+              {airline.wordmark ? (
+                <img src={airline.logo} alt={airline.name} loading="lazy" className="h-11 w-auto max-w-[150px] object-contain mix-blend-multiply" />
+              ) : (
+                <>
+                  <img src={airline.logo} alt="" width={36} height={36} loading="lazy" className="size-8 shrink-0 object-contain opacity-75 transition group-hover:opacity-100" />
+                  <span className="text-sm font-bold leading-tight text-navy transition-colors group-hover:text-brand-blue">{airline.name}</span>
+                </>
+              )}
             </Link>
           ))}
         </div>
@@ -101,6 +107,7 @@ function Landing() {
 
     <section className="bg-navy-deep py-12 text-navy-foreground" aria-labelledby="american-title">
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 sm:px-6 lg:flex-row lg:items-center">
+        <div className="grid h-24 w-44 shrink-0 place-items-center rounded-lg bg-white p-4"><img src="/airlines/american-logo.png" alt="American Airlines" loading="lazy" className="max-h-full w-auto object-contain" /></div>
         <div className="max-w-2xl">
           <p className="text-xs font-bold uppercase tracking-widest text-navy-foreground/60">Featured airline</p>
           <h2 id="american-title" className="mt-2 text-2xl font-extrabold sm:text-3xl">Flying with American Airlines?</h2>
