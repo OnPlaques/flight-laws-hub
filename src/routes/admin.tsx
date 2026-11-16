@@ -11,7 +11,7 @@ const STATUSES = ["Submitted", "Under Review", "Forwarded to Airline", "Awaiting
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => { const session = await getAdminSession(); if (!session.admin) throw redirect({ to: "/admin-login" }); },
   loader: () => listAdminClaims(),
-  head: () => ({ meta: [{ title: "Admin Console — Flightclaim" }, { name: "description", content: "Flightclaim claim-management console." }, { property: "og:title", content: "Admin Console — Flightclaim" }, { property: "og:description", content: "Flightclaim claim-management console." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ name: "robots", content: "noindex, nofollow" }, { title: "Admin Console — Flightclaim" }, { name: "description", content: "Flightclaim claim-management console." }, { property: "og:title", content: "Admin Console — Flightclaim" }, { property: "og:description", content: "Flightclaim claim-management console." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: AdminConsole,
 });
 function AdminConsole() {

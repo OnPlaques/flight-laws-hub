@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/admin-login")({
-  head: () => ({ meta: [{ title: "Admin Login — Flightclaim" }, { name: "description", content: "Secure Flightclaim administration access." }, { property: "og:title", content: "Admin Login — Flightclaim" }, { property: "og:description", content: "Secure Flightclaim administration access." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ name: "robots", content: "noindex, nofollow" }, { title: "Admin Login — Flightclaim" }, { name: "description", content: "Secure Flightclaim administration access." }, { property: "og:title", content: "Admin Login — Flightclaim" }, { property: "og:description", content: "Secure Flightclaim administration access." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: AdminLogin,
 });
 function AdminLogin() {
