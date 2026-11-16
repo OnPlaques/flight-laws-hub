@@ -64,6 +64,11 @@ export const AIRLINE_GROUPS = [
       { name: "Southwest Airlines", iata: "WN" },
       { name: "JetBlue", iata: "B6" },
       { name: "Alaska Airlines", iata: "AS" },
+      { name: "Spirit Airlines", iata: "NK" },
+      { name: "Frontier Airlines", iata: "F9" },
+      { name: "Hawaiian Airlines", iata: "HA" },
+      { name: "Allegiant Air", iata: "G4" },
+      { name: "Sun Country Airlines", iata: "SY" },
     ],
   },
   {
@@ -139,6 +144,33 @@ export type Airport = { name: string; iata: string; city: string };
 
 export const AIRPORT_GROUPS: { label: string; airports: Airport[] }[] = [
   {
+    label: "United States",
+    airports: [
+      { name: "Dallas/Fort Worth", iata: "DFW", city: "Dallas" },
+      { name: "Charlotte Douglas", iata: "CLT", city: "Charlotte" },
+      { name: "Philadelphia", iata: "PHL", city: "Philadelphia" },
+      { name: "Phoenix Sky Harbor", iata: "PHX", city: "Phoenix" },
+      { name: "Miami", iata: "MIA", city: "Miami" },
+      { name: "Chicago O'Hare", iata: "ORD", city: "Chicago" },
+      { name: "Los Angeles", iata: "LAX", city: "Los Angeles" },
+      { name: "John F. Kennedy", iata: "JFK", city: "New York" },
+      { name: "LaGuardia", iata: "LGA", city: "New York" },
+      { name: "Newark Liberty", iata: "EWR", city: "Newark" },
+      { name: "Ronald Reagan Washington", iata: "DCA", city: "Washington, D.C." },
+      { name: "Hartsfield-Jackson", iata: "ATL", city: "Atlanta" },
+      { name: "Boston Logan", iata: "BOS", city: "Boston" },
+      { name: "San Francisco", iata: "SFO", city: "San Francisco" },
+      { name: "Seattle-Tacoma", iata: "SEA", city: "Seattle" },
+      { name: "Denver", iata: "DEN", city: "Denver" },
+      { name: "Las Vegas Harry Reid", iata: "LAS", city: "Las Vegas" },
+      { name: "Orlando", iata: "MCO", city: "Orlando" },
+      { name: "George Bush Houston", iata: "IAH", city: "Houston" },
+      { name: "Minneapolis-St. Paul", iata: "MSP", city: "Minneapolis" },
+      { name: "Detroit Metro", iata: "DTW", city: "Detroit" },
+      { name: "Honolulu", iata: "HNL", city: "Honolulu" },
+    ],
+  },
+  {
     label: "United Kingdom & Ireland",
     airports: [
       { name: "London Heathrow", iata: "LHR", city: "London" },
@@ -161,13 +193,8 @@ export const AIRPORT_GROUPS: { label: string; airports: Airport[] }[] = [
     ],
   },
   {
-    label: "United States & Canada",
+    label: "Canada",
     airports: [
-      { name: "John F. Kennedy", iata: "JFK", city: "New York" },
-      { name: "Los Angeles", iata: "LAX", city: "Los Angeles" },
-      { name: "Chicago O'Hare", iata: "ORD", city: "Chicago" },
-      { name: "Hartsfield-Jackson", iata: "ATL", city: "Atlanta" },
-      { name: "Miami", iata: "MIA", city: "Miami" },
       { name: "Toronto Pearson", iata: "YYZ", city: "Toronto" },
       { name: "Vancouver", iata: "YVR", city: "Vancouver" },
     ],
@@ -211,20 +238,20 @@ export const AIRPORT_GROUPS: { label: string; airports: Airport[] }[] = [
 ];
 
 export const REGULATION_BADGES = [
-  { code: "EU261", flag: "🇪🇺", label: "EU261", detail: "Up to €600 — EU Regulation EC 261/2004" },
-  { code: "UK261", flag: "🇬🇧", label: "UK261", detail: "Up to £520 — UK Regulation" },
-  { code: "USDOT", flag: "🇺🇸", label: "US DOT Rules", detail: "Refunds & up to $2,150 — US Department of Transportation" },
-  { code: "APPR", flag: "🇨🇦", label: "Canada APPR", detail: "Up to C$1,000 — Air Passenger Protection Regulations" },
-  { code: "DGCA", flag: "🇮🇳", label: "India DGCA", detail: "Up to ₹20,000 — DGCA Passenger Charter" },
-  { code: "ANAC", flag: "🇧🇷", label: "Brazil ANAC", detail: "Passenger Rights Under ANAC Rules" },
-  { code: "MONTREAL", flag: "🌍", label: "Montreal Convention", detail: "Baggage loss, damage and delay worldwide" },
-  { code: "SHY", flag: "🇹🇷", label: "Turkey SHY", detail: "Up to €600 — Turkish passenger rights" },
+  { code: "USDOT", flag: "🇺🇸", label: "US DOT Refund Rule", detail: "Automatic refunds for cancelled or significantly changed flights" },
+  { code: "USDOT", flag: "🇺🇸", label: "Denied Boarding", detail: "Up to $2,150 when you are bumped from an oversold flight" },
+  { code: "MONTREAL", flag: "🌍", label: "Montreal Convention", detail: "Lost, delayed or damaged baggage on international trips" },
+  { code: "USDOT", flag: "🇺🇸", label: "Tarmac Delay Rule", detail: "Limits on how long you can be held on the ground" },
+  { code: "EU261", flag: "🇪🇺", label: "EU261", detail: "Up to €600 — flying to or from Europe" },
+  { code: "UK261", flag: "🇬🇧", label: "UK261", detail: "Up to £520 — flying to or from the UK" },
+  { code: "APPR", flag: "🇨🇦", label: "Canada APPR", detail: "Up to C$1,000 — flying to or from Canada" },
+  { code: "SHY", flag: "🇹🇷", label: "Turkey SHY", detail: "Up to €600 — flying to or from Türkiye" },
 ];
 
-export function formatMoney(amount: number | null | undefined, currency = "EUR") {
+export function formatMoney(amount: number | null | undefined, currency = "USD") {
   if (amount == null) return "—";
   try {
-    return new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(amount);
+    return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);
   } catch {
     return `${currency} ${amount.toFixed(2)}`;
   }
@@ -267,10 +294,10 @@ export const REGULATION_DETAILS: RegulationDetail[] = [
     chip: "US",
     name: "US DOT Rules",
     region: "United States",
-    appliesTo: "US domestic and US-departing international flights.",
+    appliesTo: "US domestic flights and flights to or from the United States.",
     covers:
-      "Automatic refunds for delays over 3 hrs domestic / 6 hrs international, denied boarding compensation, tarmac delay rights.",
-    compensation: "Refunds, plus denied boarding compensation up to $2,150",
+      "Automatic refunds for cancelled flights or significant changes (3+ hrs domestic, 6+ hrs international), bag fee refunds when a bag is badly delayed, denied boarding compensation, and tarmac delay limits (3 hrs domestic, 4 hrs international).",
+    compensation: "Cash refunds, plus denied boarding compensation of 200% to 400% of your one-way fare, up to $2,150",
     deadline: "No fixed federal deadline — file as soon as possible",
   },
   {
