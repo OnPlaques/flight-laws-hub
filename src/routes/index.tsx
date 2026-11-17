@@ -17,6 +17,11 @@ export const Route = createFileRoute("/")({
     { property: "og:description", content: "Check your US flight and start a refund or compensation claim in minutes." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
+  ],
+  links: [
+    { rel: "preload", as: "image", href: heroImage, fetchPriority: "high" },
+    { rel: "preload", as: "image", href: "/airlines/american-logo.png" },
+    ...["delta", "united", "southwest", "jetblue", "alaska", "spirit", "frontier", "hawaiian", "allegiant"].map((n) => ({ rel: "preload", as: "image", href: `/airlines/${n}-logo.png` })),
   ] }),
   component: Landing,
 });
@@ -81,7 +86,7 @@ function Landing() {
   return (
     <PageShell>
       {/* 1. Hero — the one place to check a flight */}
-      <section className="relative isolate overflow-hidden border-b border-border">
+      <section className="relative isolate overflow-hidden border-b border-border bg-surface">
         <img src={heroImage} alt="Traveler at an airport gate with an aircraft outside the window" width={1536} height={864} decoding="async" fetchPriority="high" className="absolute inset-0 size-full object-cover object-[64%_center]" />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/15" />
         <div className="relative mx-auto grid min-h-[600px] max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.08fr_0.82fr]">
@@ -128,7 +133,7 @@ function Landing() {
             >
               <div>
                 <div className="grid h-16 w-36 place-items-center rounded-lg bg-white p-3">
-                  <img src={featuredAirline.logo} alt={featuredAirline.name} loading="lazy" className="max-h-full w-auto object-contain" />
+                  <img src={featuredAirline.logo} alt={featuredAirline.name} decoding="async" className="max-h-full w-auto object-contain" />
                 </div>
                 <p className="mt-5 text-xs font-bold uppercase tracking-widest text-navy-foreground/60">Featured airline</p>
                 <h3 className="mt-1.5 text-xl font-extrabold sm:text-2xl">Flying with American Airlines?</h3>
@@ -147,10 +152,10 @@ function Landing() {
                   className="group flex min-h-24 items-center justify-center gap-3 rounded-xl border border-border bg-card px-4 py-5 transition-all hover:-translate-y-0.5 hover:border-brand-blue/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
                 >
                   {airline.wordmark ? (
-                    <img src={airline.logo} alt={airline.name} loading="lazy" className="h-11 w-auto max-w-[150px] object-contain mix-blend-multiply" />
+                    <img src={airline.logo} alt={airline.name} decoding="async" className="h-11 w-auto max-w-[150px] object-contain mix-blend-multiply" />
                   ) : (
                     <>
-                      <img src={airline.logo} alt="" width={32} height={32} loading="lazy" className="size-8 shrink-0 object-contain opacity-75 transition group-hover:opacity-100" />
+                      <img src={airline.logo} alt="" width={32} height={32} className="size-8 shrink-0 object-contain opacity-75 transition group-hover:opacity-100" />
                       <span className="text-sm font-bold leading-tight text-navy transition-colors group-hover:text-brand-blue">{airline.name}</span>
                     </>
                   )}

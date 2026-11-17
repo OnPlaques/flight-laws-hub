@@ -193,3 +193,14 @@
   html { scroll-behavior: auto; }
   main { animation: none; }
 }
+
+/* Smooth page-to-page transitions (no white flash) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.28s;
+  animation-timing-function: ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+html { background-color: var(--background); }
