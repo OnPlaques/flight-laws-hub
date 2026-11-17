@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, BriefcaseBusiness, CalendarDays, CheckCircle2, Clock, FileText, Headphones, Lock, Plane, Search, ShieldCheck, Users, WalletCards, XCircle } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, CalendarDays, Clock, FileText, Headphones, ListChecks, Lock, Plane, Search, ShieldCheck, Users, WalletCards, XCircle } from "lucide-react";
 import heroImage from "@/assets/flightclaim-professional-hero.jpg";
 import wingImage from "@/assets/flightclaim-wing.jpg";
 import { PageShell } from "@/components/site/page-shell";
@@ -12,7 +12,7 @@ import { AIRPORT_GROUPS, REGULATION_BADGES } from "@/lib/jetclaim";
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
     { title: "Flightclaim — US Flight Refunds & Compensation" },
-    { name: "description", content: "Flightclaim helps US travelers claim refunds and compensation for cancelled, significantly delayed and overbooked flights under US DOT rules." },
+    { name: "description", content: "Flightclaim helps US travelers claim refunds and compensation for cancelled, significantly changed and overbooked flights under US DOT rules." },
     { property: "og:title", content: "Flightclaim — Your Flight. Your Rights." },
     { property: "og:description", content: "Check your US flight and start a refund or compensation claim in minutes." },
     { property: "og:type", content: "website" },
@@ -21,26 +21,13 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-const disruptionTypes = [
-  { icon: XCircle, title: "Flight Cancellations", body: "You are owed a cash refund if your flight is cancelled and you choose not to take the rebooking." },
-  { icon: Clock, title: "Significant Changes", body: "A schedule change of 3+ hours (domestic) or 6+ hours (international) can qualify you for a refund." },
-  { icon: Users, title: "Overbooking", body: "If you are bumped from an oversold flight, you may be owed 200% to 400% of your one-way fare." },
-  { icon: BriefcaseBusiness, title: "Delayed Baggage", body: "Get your checked bag fee back when your bag is badly delayed." },
-];
-const steps = [
-  { icon: Search, title: "Check Eligibility", body: "Enter your flight details to find out if you qualify." },
-  { icon: FileText, title: "We Handle the Paperwork", body: "Our team collects the information needed to submit your claim." },
-  { icon: ShieldCheck, title: "We Negotiate", body: "We deal with the airline on your behalf to get the best result." },
-  { icon: WalletCards, title: "You Get Paid", body: "Once approved, your refund or compensation is paid directly to you." },
-];
-const rights = [
-  { title: "Automatic refunds", body: "Airlines must refund cancelled or significantly changed flights to your original form of payment, within 7 business days for card payments, without you having to ask." },
-  { title: "Bumped from a flight", body: "Denied boarding on an oversold flight can mean 200% to 400% of your one-way fare, up to $2,150, depending on how late you arrive." },
-  { title: "Tarmac delays", body: "Domestic flights cannot be held on the ground for more than 3 hours, and international flights for 4 hours, without a chance to get off, apart from limited safety exceptions." },
-];
+const featuredAirline = {
+  name: "American Airlines",
+  logo: "/airlines/american-logo.png",
+  hubs: "Dallas/Fort Worth, Charlotte, Chicago O’Hare, Philadelphia, Phoenix and Miami",
+};
 
-const featuredAirlines = [
-  { name: "American Airlines", logo: "/airlines/american-logo.png", wordmark: true },
+const otherAirlines = [
   { name: "Delta Air Lines", logo: "/airlines/delta-logo.png", wordmark: true },
   { name: "United Airlines", logo: "/airlines/united-logo.png", wordmark: true },
   { name: "Southwest Airlines", logo: "/airlines/southwest-logo.png", wordmark: true },
@@ -52,119 +39,223 @@ const featuredAirlines = [
   { name: "Allegiant Air", logo: "/airlines/allegiant-logo.png", wordmark: true },
 ];
 
+const claimTypes = [
+  { icon: XCircle, title: "Cancelled flights", outcome: "A full refund", body: "If the airline cancels and you choose not to take the rebooking, the ticket price goes back to your original form of payment." },
+  { icon: Clock, title: "Significant changes", outcome: "A full refund", body: "A schedule change of 3 hours or more on domestic flights, or 6 hours or more on international ones, can entitle you to your money back." },
+  { icon: Users, title: "Bumped from a flight", outcome: "Up to $2,150", body: "Denied boarding on an oversold flight can mean 200% to 400% of your one-way fare, depending on how late you arrive." },
+  { icon: BriefcaseBusiness, title: "Delayed baggage", outcome: "Your bag fee back", body: "If your checked bag is badly delayed, the fee you paid to check it can be refunded." },
+];
+
+const steps = [
+  { icon: Search, title: "Check eligibility", body: "Enter your flight details to see if you qualify." },
+  { icon: FileText, title: "We prepare your claim", body: "We collect the information and documents needed." },
+  { icon: ShieldCheck, title: "We deal with the airline", body: "We submit the claim and follow it up for you." },
+  { icon: WalletCards, title: "You get paid", body: "Approved refunds and compensation come directly to you." },
+];
+
+const reasons = [
+  { icon: Headphones, title: "Real people", body: "A support team that answers, not a chatbot." },
+  { icon: ListChecks, title: "The right rule, every time", body: "We tell you which US DOT rule applies to your flight." },
+  { icon: Search, title: "Track every step", body: "Follow your claim any time with your reference number." },
+];
+
+function SectionHead({ eyebrow, title, sub, center = false }: { eyebrow: string; title: string; sub?: string; center?: boolean }) {
+  return (
+    <div className={center ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
+      <p className="text-xs font-bold uppercase tracking-widest text-brand-blue">{eyebrow}</p>
+      <h2 className="mt-2 text-3xl font-extrabold leading-tight text-navy sm:text-4xl">{title}</h2>
+      {sub ? <p className="mt-3 text-base leading-relaxed text-muted-foreground">{sub}</p> : null}
+    </div>
+  );
+}
+
 function Landing() {
   const navigate = useNavigate();
   const [flight, setFlight] = useState("");
   const [date, setDate] = useState("");
   const [departure, setDeparture] = useState("");
-  function check(e: React.FormEvent) { e.preventDefault(); navigate({ to: "/claim", search: { flight: flight || undefined, date: date || undefined, issue: undefined } }); }
+  function check(e: React.FormEvent) {
+    e.preventDefault();
+    navigate({ to: "/claim", search: { flight: flight || undefined, date: date || undefined, from: departure || undefined, issue: undefined, airline: undefined } });
+  }
 
-  return <PageShell>
-    <section className="relative isolate overflow-hidden border-b border-border">
-      <img src={heroImage} alt="Professional traveler at an international airport with an aircraft at the gate" width={1536} height={864} decoding="async" fetchPriority="high" className="absolute inset-0 size-full object-cover object-[64%_center]" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/15" />
-      <div className="relative mx-auto grid min-h-[590px] max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.08fr_0.82fr]">
-        <div className="max-w-xl text-navy">
-          <h1 className="text-4xl font-extrabold leading-[1.12] sm:text-5xl lg:text-[3.45rem]">Flight Cancelled?<br />Bumped? Delayed?<br /><span className="text-brand-blue">You could be owed a refund or compensation.</span></h1>
-          <p className="mt-6 max-w-lg text-base font-medium leading-relaxed text-navy/75">Flightclaim helps US travelers claim the refunds and compensation they are entitled to under US DOT rules — quickly, easily and hassle-free.</p>
-          <ul className="mt-8 flex flex-wrap gap-6 text-xs font-bold sm:text-sm">{[[ShieldCheck,"No win, no fee"],[Plane,"Fast & simple process"],[Users,"Built for US flyers"]].map(([Icon,label]) => { const I=Icon as typeof Plane; return <li key={String(label)} className="flex items-center gap-2"><I className="size-5 text-brand-blue" />{String(label)}</li>; })}</ul>
-          <Link to="/claim" className="mt-8 inline-flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-3 shadow-sm transition hover:border-brand-blue/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue">
-            <img src="/airlines/american-logo.png" alt="American Airlines" className="h-10 w-auto object-contain" />
-            <span className="flex items-center gap-2 border-l border-border pl-4 text-sm font-bold text-navy">Flying American? Start your claim <ArrowRight className="size-4 text-brand-blue" /></span>
-          </Link>
-        </div>
-        <form onSubmit={check} className="ml-auto w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-2xl sm:p-7">
-          <h2 className="text-2xl font-extrabold text-navy">Check Your Flight</h2><p className="mt-1 text-sm text-muted-foreground">See if you’re eligible for a refund or compensation in less than 2 minutes.</p>
-          <div className="mt-5 space-y-3"><div className="relative"><Plane className="absolute left-3 top-3 size-4 text-brand-blue"/><Input aria-label="Flight number" className="pl-10" placeholder="Flight number (e.g. AA100)" value={flight} onChange={e=>setFlight(e.target.value)} /></div><div className="relative"><CalendarDays className="absolute left-3 top-3 size-4 text-brand-blue"/><Input aria-label="Date of flight" className="pl-10" type="date" value={date} onChange={e=>setDate(e.target.value)} /></div><Select value={departure} onValueChange={setDeparture}><SelectTrigger aria-label="Departure airport"><SelectValue placeholder="Departure airport" /></SelectTrigger><SelectContent>{AIRPORT_GROUPS.flatMap(g=>g.airports).map(a=><SelectItem key={a.iata} value={`${a.city} (${a.iata})`}>{a.city} ({a.iata})</SelectItem>)}</SelectContent></Select></div>
-          <Button type="submit" className="mt-4 w-full gap-2 bg-brand-blue text-primary-foreground hover:bg-brand-blue/90">Check Eligibility <ArrowRight className="size-4"/></Button><p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground"><Lock className="size-3"/>Your information is safe and secure.</p>
-        </form>
-      </div>
-    </section>
-
-    <section className="border-b border-border bg-background py-8" aria-labelledby="featured-airlines-title">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex flex-col gap-1 text-center sm:flex-row sm:items-baseline sm:justify-center sm:gap-2">
-          <h2 id="featured-airlines-title" className="text-sm font-extrabold text-navy">Claims across major US airlines</h2>
-          <p className="text-xs text-muted-foreground">Select an airline to start checking your flight</p>
-        </div>
-        <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-5">
-          {featuredAirlines.map((airline) => (
-            <Link
-              key={airline.name}
-              to="/claim"
-              aria-label={`Start a claim for ${airline.name}`}
-              className="group flex min-h-24 items-center justify-center gap-3 bg-card px-3 py-4 transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-inset"
-            >
-              {airline.wordmark ? (
-                <img src={airline.logo} alt={airline.name} loading="lazy" className="h-11 w-auto max-w-[150px] object-contain mix-blend-multiply" />
-              ) : (
-                <>
-                  <img src={airline.logo} alt="" width={36} height={36} loading="lazy" className="size-8 shrink-0 object-contain opacity-75 transition group-hover:opacity-100" />
-                  <span className="text-sm font-bold leading-tight text-navy transition-colors group-hover:text-brand-blue">{airline.name}</span>
-                </>
-              )}
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section className="bg-navy-deep py-12 text-navy-foreground" aria-labelledby="american-title">
-      <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 sm:px-6 lg:flex-row lg:items-center">
-        <div className="grid h-24 w-44 shrink-0 place-items-center rounded-lg bg-white p-4"><img src="/airlines/american-logo.png" alt="American Airlines" loading="lazy" className="max-h-full w-auto object-contain" /></div>
-        <div className="max-w-2xl">
-          <p className="text-xs font-bold uppercase tracking-widest text-navy-foreground/60">Featured airline</p>
-          <h2 id="american-title" className="mt-2 text-2xl font-extrabold sm:text-3xl">Flying with American Airlines?</h2>
-          <p className="mt-3 text-sm leading-relaxed text-navy-foreground/75">We help passengers file claims for cancelled, significantly changed and overbooked American Airlines flights, including trips through Dallas/Fort Worth, Charlotte, Chicago O’Hare, Philadelphia, Phoenix, Miami, Los Angeles, New York and Washington National.</p>
-          <p className="mt-3 text-xs text-navy-foreground/55">Flightclaim is an independent service and is not affiliated with American Airlines or any other airline.</p>
-        </div>
-        <Button asChild className="gap-2 bg-brand-blue text-primary-foreground hover:bg-brand-blue/90"><Link to="/claim">Check my American Airlines flight <ArrowRight className="size-4"/></Link></Button>
-      </div>
-    </section>
-
-    <section className="bg-surface py-16"><div className="mx-auto max-w-7xl px-4 text-center sm:px-6"><p className="font-bold text-navy">You could be owed up to</p><p className="mt-1 text-5xl font-extrabold text-brand-blue">$2,150</p><p className="mx-auto mt-2 max-w-xl text-xs text-muted-foreground">when you are bumped from an oversold flight, depending on your fare and how late you arrive. US rules do not require cash compensation for delays alone, so we focus on the refunds and payments you can actually claim.</p><div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">{disruptionTypes.map((item,i)=><div key={item.title} className={i ? "border-border lg:border-l lg:pl-8" : ""}><span className="mx-auto grid size-14 place-items-center rounded-full bg-brand-blue-soft text-brand-blue"><item.icon className="size-6"/></span><h3 className="mt-4 font-bold text-navy">{item.title}</h3><p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">{item.body}</p></div>)}</div></div></section>
-
-    <section className="py-18"><div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.72fr_1.5fr]"><div><p className="text-xs font-bold uppercase text-brand-blue">Simple process</p><h2 className="mt-2 text-3xl font-extrabold text-navy">How Flightclaim Works</h2><p className="mt-4 text-sm leading-relaxed text-muted-foreground">We handle the complex process so you don’t have to. From checking eligibility to getting your refund or compensation, we’re with you every step of the way.</p><Button asChild className="mt-6 gap-2 bg-brand-blue text-primary-foreground hover:bg-brand-blue/90"><Link to="/claim">Start Your Claim <ArrowRight className="size-4"/></Link></Button></div><div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">{steps.map((item,i)=><div key={item.title} className="relative text-center"><span className="absolute right-0 top-0 grid size-7 place-items-center rounded-full bg-brand-blue text-xs font-bold text-primary-foreground">{i+1}</span><span className="mx-auto grid size-14 place-items-center rounded-full bg-surface text-brand-blue"><item.icon className="size-6"/></span><h3 className="mt-4 text-sm font-bold text-navy">{item.title}</h3><p className="mt-2 text-xs leading-relaxed text-muted-foreground">{item.body}</p></div>)}</div></div></section>
-
-    <section className="bg-surface py-16"><div className="mx-auto max-w-7xl px-4 sm:px-6"><h2 className="text-center text-2xl font-extrabold text-navy">Your US passenger rights at a glance</h2><div className="mt-8 grid gap-5 md:grid-cols-3">{rights.map(r=><article key={r.title} className="rounded-lg border border-border bg-card p-5 shadow-sm"><h3 className="text-sm font-bold text-navy">{r.title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{r.body}</p></article>)}</div><p className="mx-auto mt-6 max-w-2xl text-center text-xs text-muted-foreground">Rules and dollar limits are set by the US Department of Transportation and can change. We confirm eligibility on every claim.</p></div></section>
-
-    <section className="border-y border-border bg-background py-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-          <div>
-            <p className="text-xs font-bold uppercase text-brand-blue">Your flight may be protected</p>
-            <h2 className="mt-2 text-2xl font-extrabold text-navy">Regulations we cover</h2>
+  return (
+    <PageShell>
+      {/* 1. Hero — the one place to check a flight */}
+      <section className="relative isolate overflow-hidden border-b border-border">
+        <img src={heroImage} alt="Traveler at an airport gate with an aircraft outside the window" width={1536} height={864} decoding="async" fetchPriority="high" className="absolute inset-0 size-full object-cover object-[64%_center]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/15" />
+        <div className="relative mx-auto grid min-h-[600px] max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.08fr_0.82fr]">
+          <div className="max-w-xl text-navy">
+            <h1 className="text-4xl font-extrabold leading-[1.12] sm:text-5xl lg:text-[3.45rem]">
+              Flight cancelled, bumped or delayed?
+              <span className="mt-2 block text-brand-blue">You could be owed a refund or compensation.</span>
+            </h1>
+            <p className="mt-6 max-w-lg text-base font-medium leading-relaxed text-navy/75">
+              Flightclaim helps US travelers claim what they are entitled to under US DOT rules, quickly and without the hassle.
+            </p>
+            <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-bold">
+              <li className="flex items-center gap-2"><ShieldCheck className="size-5 text-brand-blue" />No win, no fee</li>
+              <li className="flex items-center gap-2"><Plane className="size-5 text-brand-blue" />Built for US flyers</li>
+            </ul>
           </div>
-          <Link to="/regulations" className="flex items-center gap-1.5 text-sm font-bold text-brand-blue hover:underline">View all flight laws <ArrowRight className="size-4" /></Link>
+          <form onSubmit={check} className="ml-auto w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-2xl sm:p-7">
+            <h2 className="text-2xl font-extrabold text-navy">Check your flight</h2>
+            <p className="mt-1 text-sm text-muted-foreground">See if you qualify in under 2 minutes.</p>
+            <div className="mt-5 space-y-3">
+              <div className="relative"><Plane className="absolute left-3 top-3 size-4 text-brand-blue" /><Input aria-label="Flight number" className="pl-10" placeholder="Flight number (e.g. AA100)" value={flight} onChange={(e) => setFlight(e.target.value)} /></div>
+              <div className="relative"><CalendarDays className="absolute left-3 top-3 size-4 text-brand-blue" /><Input aria-label="Date of flight" className="pl-10" type="date" value={date} onChange={(e) => setDate(e.target.value)} /></div>
+              <Select value={departure} onValueChange={setDeparture}>
+                <SelectTrigger aria-label="Departure airport"><SelectValue placeholder="Departure airport" /></SelectTrigger>
+                <SelectContent>{AIRPORT_GROUPS.flatMap((g) => g.airports).map((a) => <SelectItem key={a.iata} value={`${a.city} (${a.iata})`}>{a.city} ({a.iata})</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <Button type="submit" className="mt-4 w-full gap-2 bg-brand-blue text-primary-foreground hover:bg-brand-blue/90">Check eligibility <ArrowRight className="size-4" /></Button>
+            <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground"><Lock className="size-3" />Your information is safe and secure.</p>
+          </form>
         </div>
-        <div className="mt-7 flex gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 md:grid-cols-4">
-          {REGULATION_BADGES.map((reg) => (
+      </section>
+
+      {/* 2. Airlines — the one place airlines appear; each opens the claim form with the airline filled in */}
+      <section className="bg-background py-20" aria-labelledby="airlines-title">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHead eyebrow="Start with your airline" title="Which airline let you down?" sub="Choose your airline and we open the claim form with it already filled in." />
+          <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.45fr]">
             <Link
-              key={reg.label}
-              to="/regulations"
-              hash={reg.code.toLowerCase()}
-              className="group flex min-w-56 items-center gap-3 rounded-lg border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-brand-blue/50 hover:shadow-md sm:min-w-0"
+              to="/claim"
+              search={{ airline: featuredAirline.name }}
+              aria-label={`Start a claim for ${featuredAirline.name}`}
+              className="group flex flex-col justify-between gap-8 rounded-2xl bg-navy-deep p-8 text-navy-foreground transition-shadow hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2"
             >
-              <span className="text-2xl" aria-hidden="true">{reg.flag}</span>
-              <span className="min-w-0">
-                <span className="block text-sm font-extrabold text-navy group-hover:text-brand-blue">{reg.label}</span>
-                <span className="mt-1 block text-xs leading-snug text-muted-foreground">{reg.detail}</span>
-              </span>
-              <ArrowRight className="ml-auto size-4 shrink-0 text-brand-blue" />
+              <div>
+                <div className="grid h-24 w-48 place-items-center rounded-lg bg-white p-4">
+                  <img src={featuredAirline.logo} alt={featuredAirline.name} loading="lazy" className="max-h-full w-auto object-contain" />
+                </div>
+                <p className="mt-8 text-xs font-bold uppercase tracking-widest text-navy-foreground/60">Featured airline</p>
+                <h3 className="mt-2 text-2xl font-extrabold sm:text-3xl">Flying with American Airlines?</h3>
+                <p className="mt-3 text-sm leading-relaxed text-navy-foreground/75">We handle claims for cancelled, significantly changed and overbooked American Airlines flights, including trips through {featuredAirline.hubs}.</p>
+              </div>
+              <span className="inline-flex items-center gap-2 text-sm font-bold">Start your American Airlines claim <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" /></span>
             </Link>
-          ))}
+
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              {otherAirlines.map((airline) => (
+                <Link
+                  key={airline.name}
+                  to="/claim"
+                  search={{ airline: airline.name }}
+                  aria-label={`Start a claim for ${airline.name}`}
+                  className="group flex min-h-28 items-center justify-center gap-3 rounded-xl border border-border bg-card px-4 py-5 transition-all hover:-translate-y-0.5 hover:border-brand-blue/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+                >
+                  {airline.wordmark ? (
+                    <img src={airline.logo} alt={airline.name} loading="lazy" className="h-11 w-auto max-w-[150px] object-contain mix-blend-multiply" />
+                  ) : (
+                    <>
+                      <img src={airline.logo} alt="" width={32} height={32} loading="lazy" className="size-8 shrink-0 object-contain opacity-75 transition group-hover:opacity-100" />
+                      <span className="text-sm font-bold leading-tight text-navy transition-colors group-hover:text-brand-blue">{airline.name}</span>
+                    </>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <p className="mt-6 text-xs text-muted-foreground">Flying with another airline? Pick it in the claim form. Flightclaim is an independent service and is not affiliated with any airline.</p>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section className="bg-surface py-16"><div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2"><div className="relative overflow-hidden rounded-lg"><img src={wingImage} alt="Aircraft wing above clouds at sunrise" width={1024} height={640} loading="lazy" className="aspect-[16/9] w-full object-cover"/><p className="absolute bottom-5 left-6 max-w-[10ch] -rotate-6 text-2xl font-bold italic text-primary-foreground drop-shadow">Your journey matters.</p></div><div><p className="text-xs font-bold uppercase text-muted-foreground">Why choose Flightclaim</p><h2 className="mt-2 text-3xl font-extrabold text-navy">Your Rights. Our Priority.</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">We’re a dedicated team of travel experts with a simple mission — to help you get what you’re owed.</p><div className="mt-7 grid gap-6 sm:grid-cols-2">{[[Headphones,"Expert Support","Real people, not bots. We’re here to help."],[ShieldCheck,"Clear Next Steps","We tell you which US DOT rule applies to your flight."],[CheckCircle2,"Transparent Process","No hidden fees. No surprises."],[Plane,"US & Global Coverage","Built for US flights, with support for international trips too."]].map(([Icon,title,body])=>{const I=Icon as typeof Plane;return <div key={String(title)} className="flex gap-3"><span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-blue-soft text-brand-blue"><I className="size-5"/></span><div><h3 className="text-sm font-bold text-navy">{String(title)}</h3><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{String(body)}</p></div></div>})}</div></div></div></section>
+      {/* 3. What you can claim — the one place money amounts appear */}
+      <section className="border-y border-border bg-surface py-20" aria-labelledby="claims-title">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHead center eyebrow="What you can claim" title="Four situations that can put money back" />
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {claimTypes.map((item) => (
+              <article key={item.title} className="flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm">
+                <span className="grid size-12 place-items-center rounded-full bg-brand-blue-soft text-brand-blue"><item.icon className="size-6" /></span>
+                <h3 className="mt-5 text-lg font-bold text-navy">{item.title}</h3>
+                <p className="mt-1 text-xl font-extrabold text-brand-blue">{item.outcome}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground">US rules do not require cash compensation for delays alone. Rules and dollar limits are set by the US Department of Transportation and can change, so we confirm eligibility on every claim.</p>
+        </div>
+      </section>
 
-    <section className="bg-navy-deep py-16 text-navy-foreground" aria-labelledby="final-cta-title">
-      <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-4 text-center sm:px-6">
-        <h2 id="final-cta-title" className="text-3xl font-extrabold sm:text-4xl">Ready to find out what you’re owed?</h2>
-        <p className="max-w-xl text-sm leading-relaxed text-navy-foreground/75">Check your flight in under 2 minutes. No win, no fee.</p>
-        <Button asChild size="lg" className="gap-2 bg-brand-blue text-primary-foreground hover:bg-brand-blue/90"><Link to="/claim">Check my flight <ArrowRight className="size-4"/></Link></Button>
-      </div>
-    </section>
-  </PageShell>;
+      {/* 4. How it works */}
+      <section className="bg-background py-20" aria-labelledby="how-title">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHead center eyebrow="Simple process" title="How Flightclaim works" />
+          <ol className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((item, i) => (
+              <li key={item.title} className="relative text-center">
+                <span className="mx-auto grid size-14 place-items-center rounded-full bg-surface text-brand-blue"><item.icon className="size-6" /></span>
+                <span className="absolute left-1/2 top-0 ml-4 grid size-6 place-items-center rounded-full bg-brand-blue text-xs font-bold text-primary-foreground">{i + 1}</span>
+                <h3 className="mt-5 text-base font-bold text-navy">{item.title}</h3>
+                <p className="mx-auto mt-2 max-w-[16rem] text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 5. Why Flightclaim */}
+      <section className="bg-surface py-20" aria-labelledby="why-title">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2">
+          <div className="relative overflow-hidden rounded-2xl">
+            <img src={wingImage} alt="Aircraft wing above the clouds at sunrise" width={1024} height={640} loading="lazy" className="aspect-[16/10] w-full object-cover" />
+          </div>
+          <div>
+            <SectionHead eyebrow="Why Flightclaim" title="Your rights. Our priority." sub="A small team with one job: getting you what you are owed." />
+            <ul className="mt-8 space-y-6">
+              {reasons.map((r) => (
+                <li key={r.title} className="flex gap-4">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-blue-soft text-brand-blue"><r.icon className="size-5" /></span>
+                  <div>
+                    <h3 className="text-base font-bold text-navy">{r.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{r.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Rules we work under */}
+      <section className="bg-background py-16" aria-labelledby="rules-title">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <SectionHead eyebrow="Rules we work under" title="One service, every major flight law" />
+            <Link to="/regulations" className="flex items-center gap-1.5 text-sm font-bold text-brand-blue hover:underline">Read the full guide <ArrowRight className="size-4" /></Link>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {REGULATION_BADGES.map((reg) => (
+              <Link
+                key={reg.code}
+                to="/regulations"
+                hash={reg.code.toLowerCase()}
+                className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-brand-blue/50 hover:shadow-md"
+              >
+                <span className="text-2xl" aria-hidden="true">{reg.flag}</span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-extrabold text-navy group-hover:text-brand-blue">{reg.label}</span>
+                  <span className="mt-0.5 block text-xs text-muted-foreground">{reg.detail}</span>
+                </span>
+                <ArrowRight className="ml-auto size-4 shrink-0 text-brand-blue" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Closing call to action */}
+      <section className="bg-navy-deep py-16 text-navy-foreground" aria-labelledby="final-cta-title">
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 px-4 text-center sm:px-6">
+          <h2 id="final-cta-title" className="text-3xl font-extrabold sm:text-4xl">Ready to find out what you’re owed?</h2>
+          <p className="max-w-xl text-sm leading-relaxed text-navy-foreground/75">It takes less than 3 minutes to start your claim.</p>
+          <Button asChild size="lg" className="gap-2 bg-brand-blue text-primary-foreground hover:bg-brand-blue/90"><Link to="/claim">Start your claim <ArrowRight className="size-4" /></Link></Button>
+        </div>
+      </section>
+    </PageShell>
+  );
 }

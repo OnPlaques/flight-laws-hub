@@ -27,6 +27,8 @@ const searchSchema = z.object({
   flight: z.string().max(10).optional(),
   date: z.string().max(20).optional(),
   issue: z.string().max(40).optional(),
+  airline: z.string().max(120).optional(),
+  from: z.string().max(60).optional(),
 });
 
 export const Route = createFileRoute("/claim")({
@@ -89,10 +91,10 @@ function ClaimForm() {
   const [airlineOpen, setAirlineOpen] = useState(false);
 
   const [form, setForm] = useState({
-    airline_name: "",
+    airline_name: search.airline ?? "",
     flight_number: search.flight ?? "",
     flight_date: search.date ?? "",
-    departure_airport: "",
+    departure_airport: search.from ?? "",
     arrival_airport: "",
     issue_type: search.issue ?? "",
     description: "",
@@ -271,7 +273,7 @@ function ClaimForm() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label htmlFor="fn">Flight number</Label>
-                    <Input id="fn" placeholder="e.g. BA123" maxLength={10} value={form.flight_number} onChange={(e) => set("flight_number", e.target.value)} />
+                    <Input id="fn" placeholder="e.g. AA100" maxLength={10} value={form.flight_number} onChange={(e) => set("flight_number", e.target.value)} />
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="fd">Date of flight</Label>
@@ -280,14 +282,14 @@ function ClaimForm() {
                   <AirportField
                     id="dep"
                     label="Departure airport"
-                    placeholder="e.g. London Heathrow (LHR)"
+                    placeholder="e.g. Dallas/Fort Worth (DFW)"
                     value={form.departure_airport}
                     onChange={(v) => set("departure_airport", v)}
                   />
                   <AirportField
                     id="arr"
                     label="Arrival airport"
-                    placeholder="e.g. Nairobi (NBO)"
+                    placeholder="e.g. New York JFK (JFK)"
                     value={form.arrival_airport}
                     onChange={(v) => set("arrival_airport", v)}
                   />

@@ -238,14 +238,12 @@ export const AIRPORT_GROUPS: { label: string; airports: Airport[] }[] = [
 ];
 
 export const REGULATION_BADGES = [
-  { code: "USDOT", flag: "🇺🇸", label: "US DOT Refund Rule", detail: "Automatic refunds for cancelled or significantly changed flights" },
-  { code: "USDOT", flag: "🇺🇸", label: "Denied Boarding", detail: "Up to $2,150 when you are bumped from an oversold flight" },
-  { code: "MONTREAL", flag: "🌍", label: "Montreal Convention", detail: "Lost, delayed or damaged baggage on international trips" },
-  { code: "USDOT", flag: "🇺🇸", label: "Tarmac Delay Rule", detail: "Limits on how long you can be held on the ground" },
-  { code: "EU261", flag: "🇪🇺", label: "EU261", detail: "Up to €600 — flying to or from Europe" },
-  { code: "UK261", flag: "🇬🇧", label: "UK261", detail: "Up to £520 — flying to or from the UK" },
-  { code: "APPR", flag: "🇨🇦", label: "Canada APPR", detail: "Up to C$1,000 — flying to or from Canada" },
-  { code: "SHY", flag: "🇹🇷", label: "Turkey SHY", detail: "Up to €600 — flying to or from Türkiye" },
+  { code: "USDOT", flag: "🇺🇸", label: "US DOT rules", detail: "Flights within, to or from the United States" },
+  { code: "MONTREAL", flag: "🌍", label: "Montreal Convention", detail: "Baggage on international trips" },
+  { code: "EU261", flag: "🇪🇺", label: "EU261", detail: "Flights to or from the European Union" },
+  { code: "UK261", flag: "🇬🇧", label: "UK261", detail: "Flights to or from the United Kingdom" },
+  { code: "APPR", flag: "🇨🇦", label: "Canada APPR", detail: "Flights to or from Canada" },
+  { code: "SHY", flag: "🇹🇷", label: "Turkey SHY", detail: "Flights to or from Türkiye" },
 ];
 
 export function formatMoney(amount: number | null | undefined, currency = "USD") {
