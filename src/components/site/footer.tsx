@@ -37,8 +37,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-navy-foreground/10">
         <p className="mx-auto max-w-7xl px-4 py-6 text-xs text-navy-foreground/60 sm:px-6">
-          © {new Date().getFullYear()} Flightclaim. All rights reserved. Flightclaim is not a law firm and
-          does not provide legal advice. Flightclaim is an independent service and is not affiliated with any airline.
+          © {new Date().getFullYear()} Flightclaim. All rights reserved.
         </p>
       </div>
     </footer>
