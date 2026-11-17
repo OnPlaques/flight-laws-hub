@@ -24,7 +24,6 @@ export const Route = createFileRoute("/")({
 const featuredAirline = {
   name: "American Airlines",
   logo: "/airlines/american-logo.png",
-  hubs: "Dallas/Fort Worth, Charlotte, Chicago O’Hare, Philadelphia, Phoenix and Miami",
 };
 
 const otherAirlines = [
@@ -125,15 +124,15 @@ function Landing() {
               to="/claim"
               search={{ airline: featuredAirline.name }}
               aria-label={`Start a claim for ${featuredAirline.name}`}
-              className="group flex flex-col justify-between gap-8 rounded-2xl bg-navy-deep p-8 text-navy-foreground transition-shadow hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2"
+              className="group flex flex-col justify-between gap-5 rounded-2xl bg-navy-deep p-6 text-navy-foreground transition-shadow hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2"
             >
               <div>
-                <div className="grid h-24 w-48 place-items-center rounded-lg bg-white p-4">
+                <div className="grid h-16 w-36 place-items-center rounded-lg bg-white p-3">
                   <img src={featuredAirline.logo} alt={featuredAirline.name} loading="lazy" className="max-h-full w-auto object-contain" />
                 </div>
-                <p className="mt-8 text-xs font-bold uppercase tracking-widest text-navy-foreground/60">Featured airline</p>
-                <h3 className="mt-2 text-2xl font-extrabold sm:text-3xl">Flying with American Airlines?</h3>
-                <p className="mt-3 text-sm leading-relaxed text-navy-foreground/75">We handle claims for cancelled, significantly changed and overbooked American Airlines flights, including trips through {featuredAirline.hubs}.</p>
+                <p className="mt-5 text-xs font-bold uppercase tracking-widest text-navy-foreground/60">Featured airline</p>
+                <h3 className="mt-1.5 text-xl font-extrabold sm:text-2xl">Flying with American Airlines?</h3>
+                <p className="mt-2 text-sm leading-relaxed text-navy-foreground/75">We handle claims for cancelled, changed and overbooked American Airlines flights.</p>
               </div>
               <span className="inline-flex items-center gap-2 text-sm font-bold">Start your American Airlines claim <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" /></span>
             </Link>
@@ -145,7 +144,7 @@ function Landing() {
                   to="/claim"
                   search={{ airline: airline.name }}
                   aria-label={`Start a claim for ${airline.name}`}
-                  className="group flex min-h-28 items-center justify-center gap-3 rounded-xl border border-border bg-card px-4 py-5 transition-all hover:-translate-y-0.5 hover:border-brand-blue/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+                  className="group flex min-h-24 items-center justify-center gap-3 rounded-xl border border-border bg-card px-4 py-5 transition-all hover:-translate-y-0.5 hover:border-brand-blue/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
                 >
                   {airline.wordmark ? (
                     <img src={airline.logo} alt={airline.name} loading="lazy" className="h-11 w-auto max-w-[150px] object-contain mix-blend-multiply" />
@@ -159,7 +158,7 @@ function Landing() {
               ))}
             </div>
           </div>
-          <p className="mt-6 text-xs text-muted-foreground">Flying with another airline? Pick it in the claim form. Flightclaim is an independent service and is not affiliated with any airline.</p>
+          <p className="mt-6 text-xs text-muted-foreground">Flying with another airline? Pick it in the claim form.</p>
         </div>
       </section>
 
