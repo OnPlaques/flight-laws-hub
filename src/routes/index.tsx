@@ -32,7 +32,7 @@ const otherAirlines = [
   { name: "United Airlines", logo: "/airlines/united-logo.png", wordmark: true },
   { name: "Southwest Airlines", logo: "/airlines/southwest-logo.png", wordmark: true },
   { name: "JetBlue", logo: "/airlines/jetblue-logo.png", wordmark: true },
-  { name: "Alaska Airlines", logo: "/airlines/generic-plane.svg", wordmark: false },
+  { name: "Alaska Airlines", logo: "/airlines/alaska-logo.png", wordmark: true },
   { name: "Spirit Airlines", logo: "/airlines/spirit-logo.png", wordmark: true },
   { name: "Frontier Airlines", logo: "/airlines/frontier-logo.png", wordmark: true },
   { name: "Hawaiian Airlines", logo: "/airlines/hawaiian-logo.png", wordmark: true },
